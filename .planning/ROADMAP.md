@@ -31,12 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A logged-in user can complete the full onboarding flow (interests → profile type → region → exploration mode) and their selections are saved
   4. Every screen uses Japandi Calm Tech tokens — Washi Paper neutrals, Cormorant Garamond display type, DM Sans UI type, Phosphor thin icons, 4px grid spacing
   5. All interactive elements meet WCAG AA contrast (4.5:1 minimum) and animations follow calm tech rules (200ms, no bounce)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Next.js project scaffold with Japandi Calm Tech design system tokens and global styles
-- [ ] 01-02: Authentication screens (P01) — sign up, log in, session persistence, log out
-- [ ] 01-03: Onboarding flow (P02-P05) — interests, profile type, region, exploration mode, save to profile
+- [ ] 01-01-PLAN.md — Next.js 14 scaffold with Japandi Calm Tech design system tokens, AppShell, and base UI primitives
+- [ ] 01-02-PLAN.md — Auth screens (P01): signup, login, session persistence, logout — localStorage-based
+- [ ] 01-03-PLAN.md — Onboarding flow (P02-P05): interests, profile type, region, exploration mode, profile persistence
 
 ### Phase 2: Home Feed
 **Goal**: Logged-in users see a personalized editorial home feed with carousels and companion entry points; guests see a generic version
