@@ -34,6 +34,7 @@ Progress: [████░░░░░░] 40%
 - Trend: on track
 
 *Updated after each plan completion*
+| Phase 04-ai-companion P01 | 191 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -50,6 +51,8 @@ Recent decisions affecting current work:
 - [04-02]: Thin client ChatProvider.tsx re-export — keeps layout.tsx as server component
 - [04-02]: chatMode defaults to "minimal" — chatbar always starts as pill
 - [04-02]: GlobalChatbar renders null for sidebar/fullscreen — those modes own their own UI in 04-03/04-04
+- [Phase 04-ai-companion]: Deterministic AI: selectedText.length % 5 selects from 5 pre-written Spanish cultural responses
+- [Phase 04-ai-companion]: Server/client split: page.tsx stays server component for data fetching; ArticlePageClient is client wrapper for explore state
 
 ### Pending Todos
 
@@ -62,5 +65,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 04-02-PLAN.md — chat store foundation + GlobalChatbar multi-state complete. Next: 04-03 (ConversationSidebar) then 04-04 (AI responses).
+Stopped at: Completed 04-01-PLAN.md — contextualRAG mock + TextSelectionTrigger + ContextualExplorePanel + ArticlePageClient. CTX-01 through CTX-06 satisfied.
 Resume file: None

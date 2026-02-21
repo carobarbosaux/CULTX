@@ -133,6 +133,6 @@ Note: Phase 5 depends on Phase 2 (not Phase 4), so it can begin after Phase 3/4 
 | 1. Foundation | 0/3 | Not started | - |
 | 2. Home Feed | 0/3 | Not started | - |
 | 3. Article Reader | 0/3 | Not started | - |
-| 4. AI Companion | 2/4 | In progress | - |
+| 4. AI Companion | 2/4 | In Progress|  |
 | 5. Explore Mexico Map | 0/3 | Not started | - |
 | 6. Profile | 0/2 | Not started | - |
