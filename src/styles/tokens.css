@@ -1,0 +1,72 @@
+:root {
+  /* Washi Paper Neutrals */
+  --color-washi-50: #faf9f7;
+  --color-washi-100: #f5f3ef;
+  --color-washi-200: #ece8e0;
+  --color-washi-300: #ddd8cc;
+  --color-washi-400: #c8c0b0;
+  --color-washi-500: #b0a594;
+  --color-washi-600: #8f8070;
+  --color-washi-700: #6e6358;
+  --color-washi-800: #4e4740;
+  --color-washi-900: #2e2a26;
+
+  /* Sage Accent */
+  --color-sage-300: #b8c4a8;
+  --color-sage-400: #9aad88;
+  --color-sage-500: #7d9469;
+  --color-sage-600: #637a52;
+
+  /* Semantic tokens — light mode */
+  --color-bg: var(--color-washi-50);
+  --color-surface: #ffffff;
+  --color-surface-raised: var(--color-washi-100);
+  --color-border: var(--color-washi-200);
+  --color-text-primary: var(--color-washi-900);
+  --color-text-secondary: var(--color-washi-600);
+  --color-text-muted: var(--color-washi-500);
+  --color-accent: #4a6741;
+  --color-accent-hover: #3a5232;
+  --color-focus-ring: var(--color-sage-500);
+
+  /* Typography */
+  --font-display: var(--font-cormorant), "Georgia", serif;
+  --font-ui: var(--font-dm-sans), "system-ui", sans-serif;
+
+  /* Spacing scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(46, 42, 38, 0.08);
+  --shadow-md: 0 4px 12px rgba(46, 42, 38, 0.10);
+
+  /* Motion — calm tech rules (200ms, no bounce) */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-base: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: var(--duration-base) var(--ease-base);
+}
+
+/* Dark mode tokens (bonus — light mode is primary for v1) */
+[data-theme="dark"] {
+  --color-bg: var(--color-washi-900);
+  --color-surface: var(--color-washi-800);
+  --color-surface-raised: var(--color-washi-700);
+  --color-border: var(--color-washi-700);
+  --color-text-primary: var(--color-washi-50);
+  --color-text-secondary: var(--color-washi-300);
+  --color-text-muted: var(--color-washi-400);
+}

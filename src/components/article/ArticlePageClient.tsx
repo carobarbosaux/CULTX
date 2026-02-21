@@ -2,35 +2,48 @@
 
 import { useState, useEffect } from "react";
 import { getProfile } from "@/lib/profile";
+import { getChatResponse } from "@/ai/chatResponder";
 import type { Article } from "@/lib/articles";
 import { ArticleNav } from "@/components/article/ArticleNav";
 import { ArticleHeader } from "@/components/article/ArticleHeader";
 import { ArticleToolbar } from "@/components/article/ArticleToolbar";
 import { ArticleBody } from "@/components/article/ArticleBody";
+import { ArticleEjes } from "@/components/article/ArticleEjes";
 import { ContextualExplorePanel } from "@/components/article/ContextualExplorePanel";
-import { SendToChatButton } from "@/components/article/SendToChatButton";
 import { NewsletterCTA } from "@/components/article/NewsletterCTA";
+import { useChatStore } from "@/components/chat/ChatProvider";
 
 interface ArticlePageClientProps {
   article: Article;
 }
 
-/**
- * Client wrapper for the article page that holds explore state.
- * Keeps page.tsx as a server component (for data fetching) while enabling
- * client-side text selection and contextual explore panel interactions.
- */
 export function ArticlePageClient({ article }: ArticlePageClientProps) {
   const [exploreText, setExploreText] = useState<string | null>(null);
   const [profileType, setProfileType] = useState<string | null>(null);
+  const { addMessage, setArticleContext, setChatMode, messages } = useChatStore();
 
-  // Read profile from localStorage on mount to determine AI depth label.
   useEffect(() => {
     const profile = getProfile();
-    if (profile?.profileType) {
-      setProfileType(profile.profileType);
-    }
+    if (profile?.profileType) setProfileType(profile.profileType);
   }, []);
+
+  // "Llevar al chat" — quotes selected text and triggers an AI reply in the sidebar
+  async function handleSendToChat(selectedText: string) {
+    const truncated = selectedText.length > 200 ? selectedText.slice(0, 200) + "…" : selectedText;
+    const question = `«${truncated}»\n\n¿Puedes profundizar en este fragmento?`;
+    setArticleContext(article.title);
+    setChatMode("sidebar");
+    addMessage({ role: "user", content: question });
+
+    await new Promise((r) => setTimeout(r, 800 + Math.random() * 400));
+    const response = getChatResponse({
+      userMessage: selectedText,
+      articleContext: article.title,
+      profileType,
+      messageCount: messages.length,
+    });
+    addMessage({ role: "assistant", content: response });
+  }
 
   return (
     <article className="min-h-screen px-4 py-12">
@@ -41,12 +54,12 @@ export function ArticlePageClient({ article }: ArticlePageClientProps) {
         <ArticleBody
           body={article.body}
           onExplore={(text) => setExploreText(text)}
+          onSendToChat={handleSendToChat}
         />
-        <SendToChatButton articleTitle={article.title} />
+        <ArticleEjes article={article} />
         <NewsletterCTA />
       </div>
 
-      {/* Side panel rendered outside the max-width container so it can span full height */}
       <ContextualExplorePanel
         selectedText={exploreText}
         profileType={profileType}

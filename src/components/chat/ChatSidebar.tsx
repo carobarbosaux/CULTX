@@ -2,12 +2,44 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
-  ArrowsIn,
   ArrowsOut,
   ArrowUp,
   ChatTeardrop,
+  ClockCounterClockwise,
+  NotePencil,
+  X,
 } from "@phosphor-icons/react";
+
+// Render assistant message content — parses [text](/url) into real links
+function MessageContent({ content }: { content: string }) {
+  const parts = content.split(/(\[([^\]]+)\]\(([^)]+)\))/g);
+  const nodes: React.ReactNode[] = [];
+  let i = 0;
+  while (i < parts.length) {
+    const part = parts[i];
+    if (part.startsWith("[") && parts[i + 1] !== undefined) {
+      // This is a match group — skip the capture groups next
+      i++;
+      const text = parts[i]; i++;
+      const href = parts[i]; i++;
+      nodes.push(
+        <Link
+          key={i}
+          href={href}
+          style={{ color: "var(--color-accent)", textDecoration: "underline", textUnderlineOffset: "3px" }}
+        >
+          {text}
+        </Link>
+      );
+    } else {
+      if (part) nodes.push(part);
+      i++;
+    }
+  }
+  return <>{nodes}</>;
+}
 import { useChatStore } from "@/components/chat/ChatProvider";
 import { getChatResponse } from "@/ai/chatResponder";
 import { getProfile } from "@/lib/profile";
@@ -22,11 +54,12 @@ import { TypingIndicator } from "@/components/chat/TypingIndicator";
 // ────────────────────────────────────────────────────────────────────────────────
 
 export function ChatSidebar() {
-  const { messages, articleContext, chatMode, setChatMode, addMessage } =
+  const { messages, articleContext, chatMode, setChatMode, addMessage, clearMessages } =
     useChatStore();
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [profileType, setProfileType] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -85,6 +118,19 @@ export function ChatSidebar() {
   function handleCollapse() {
     setChatMode("minimal");
   }
+
+  const iconBtnStyle: React.CSSProperties = {
+    padding: "6px",
+    borderRadius: "6px",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    color: "var(--color-text-muted)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "opacity 0.2s",
+  };
 
   return (
     <div
@@ -163,54 +209,107 @@ export function ChatSidebar() {
         </div>
 
         {/* Controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          {/* Collapse → minimal */}
+        <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+          {/* New conversation */}
           <button
             type="button"
-            onClick={handleCollapse}
-            aria-label="Colapsar chat"
-            style={{
-              padding: "6px",
-              borderRadius: "6px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "var(--color-text-muted)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "opacity 0.2s",
-            }}
+            onClick={() => { clearMessages(); setShowHistory(false); }}
+            aria-label="Nueva conversación"
+            title="Nueva conversación"
+            style={iconBtnStyle}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.6")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            <ArrowsIn size={18} weight="thin" />
+            <NotePencil size={17} weight="thin" />
           </button>
 
-          {/* Expand → fullscreen */}
+          {/* History */}
+          <button
+            type="button"
+            onClick={() => setShowHistory((v) => !v)}
+            aria-label="Ver historial"
+            title="Historial de conversación"
+            style={{ ...iconBtnStyle, opacity: showHistory ? 1 : undefined, color: showHistory ? "var(--color-accent)" : "var(--color-text-muted)" }}
+            onMouseEnter={(e) => { if (!showHistory) e.currentTarget.style.opacity = "0.6"; }}
+            onMouseLeave={(e) => { if (!showHistory) e.currentTarget.style.opacity = "1"; }}
+          >
+            <ClockCounterClockwise size={17} weight="thin" />
+          </button>
+
+          {/* Fullscreen */}
           <button
             type="button"
             onClick={handleExpandToFullscreen}
             aria-label="Pantalla completa"
-            style={{
-              padding: "6px",
-              borderRadius: "6px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "var(--color-text-muted)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "opacity 0.2s",
-            }}
+            title="Abrir en pantalla completa"
+            style={iconBtnStyle}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.6")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            <ArrowsOut size={18} weight="thin" />
+            <ArrowsOut size={17} weight="thin" />
+          </button>
+
+          {/* Close sidebar */}
+          <button
+            type="button"
+            onClick={handleCollapse}
+            aria-label="Cerrar panel"
+            title="Cerrar panel"
+            style={iconBtnStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.6")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            <X size={17} weight="thin" />
           </button>
         </div>
       </div>
+
+      {/* ── History panel (overlay when showHistory is true) ── */}
+      {showHistory && (
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.75rem", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+            Historial
+          </p>
+          {messages.length === 0 ? (
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
+              No hay mensajes aún.
+            </p>
+          ) : (
+            messages
+              .filter((m) => m.role === "user")
+              .map((m) => (
+                <div
+                  key={m.id}
+                  style={{
+                    padding: "8px 12px",
+                    borderRadius: "var(--radius-md)",
+                    background: "var(--color-surface-raised)",
+                    fontFamily: "var(--font-ui)",
+                    fontSize: "0.8rem",
+                    color: "var(--color-text-secondary)",
+                    cursor: "pointer",
+                    border: "1px solid var(--color-border)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                  onClick={() => setShowHistory(false)}
+                >
+                  {m.content}
+                </div>
+              ))
+          )}
+        </div>
+      )}
 
       {/* ── Messages list ───────────────────────────────────────────────────────── */}
       <div
@@ -218,7 +317,7 @@ export function ChatSidebar() {
           flex: 1,
           overflowY: "auto",
           padding: "16px",
-          display: "flex",
+          display: showHistory ? "none" : "flex",
           flexDirection: "column",
           gap: "12px",
         }}
@@ -286,7 +385,9 @@ export function ChatSidebar() {
                         }),
                   }}
                 >
-                  {msg.content}
+                  {msg.role === "assistant"
+                    ? <MessageContent content={msg.content} />
+                    : msg.content}
                 </div>
               </div>
             ))}

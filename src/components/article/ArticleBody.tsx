@@ -3,9 +3,10 @@ import { TextSelectionTrigger } from "@/components/article/TextSelectionTrigger"
 interface ArticleBodyProps {
   body: string;
   onExplore?: (text: string) => void;
+  onSendToChat?: (text: string) => void;
 }
 
-export function ArticleBody({ body, onExplore }: ArticleBodyProps) {
+export function ArticleBody({ body, onExplore, onSendToChat }: ArticleBodyProps) {
   const paragraphs = body.split("\n\n").filter(Boolean);
 
   const content = (
@@ -28,9 +29,15 @@ export function ArticleBody({ body, onExplore }: ArticleBodyProps) {
     </div>
   );
 
-  // Only wrap with selection trigger if an onExplore callback is provided.
   if (onExplore) {
-    return <TextSelectionTrigger onExplore={onExplore}>{content}</TextSelectionTrigger>;
+    return (
+      <TextSelectionTrigger
+        onExplore={onExplore}
+        onSendToChat={onSendToChat ?? (() => {})}
+      >
+        {content}
+      </TextSelectionTrigger>
+    );
   }
 
   return content;
