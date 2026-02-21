@@ -83,13 +83,13 @@ Plans:
   4. A user can dismiss the panel, then expand the Global Chatbar into a persistent sidebar where the article remains visible alongside the chat
   5. A user can expand the chat to fullscreen mode and collapse it back to sidebar or minimal chatbar state
   6. "Send to Chat" from the article passes context, and the chat header shows "Discussing: [article title]"
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 04-01: Contextual exploration (CTX) — text selection trigger, floating Explore button, side panel with simulated response and related links
-- [ ] 04-02: Global Chatbar states — minimal chatbar, drawer expansion, Send to Chat action
-- [ ] 04-03: AI Chat sidebar and fullscreen (P08/P08b) — sidebar layout with article visible, fullscreen mode, collapse/expand state transitions
-- [ ] 04-04: Chat intelligence surface — simulated responses, session conversation history, article context awareness, profile-type depth label
+- [ ] 04-01-PLAN.md — Contextual exploration: mock contextualRAG function, TextSelectionTrigger, ContextualExplorePanel with depth label and related links
+- [x] 04-02-PLAN.md — Global Chatbar upgrade: shared chatStore (Context + localStorage), chatbar multi-state (minimal/drawer), SendToChatButton wired to store
+- [ ] 04-03-PLAN.md — Chat sidebar and fullscreen: ChatSidebar component (380px fixed panel), /chat fullscreen page, AppShell layout shift, mode transitions
+- [ ] 04-04-PLAN.md — Chat intelligence: chatResponder mock function, typing indicator, AI response wiring in all surfaces, end-to-end verification checkpoint
 
 ### Phase 5: Explore Mexico Map
 **Goal**: Users can navigate to the Explore Mexico page, interact with the regional map, and discover cultural article collections by region
@@ -133,6 +133,6 @@ Note: Phase 5 depends on Phase 2 (not Phase 4), so it can begin after Phase 3/4 
 | 1. Foundation | 0/3 | Not started | - |
 | 2. Home Feed | 0/3 | Not started | - |
 | 3. Article Reader | 0/3 | Not started | - |
-| 4. AI Companion | 0/4 | Not started | - |
+| 4. AI Companion | 2/4 | In progress | - |
 | 5. Explore Mexico Map | 0/3 | Not started | - |
 | 6. Profile | 0/2 | Not started | - |
