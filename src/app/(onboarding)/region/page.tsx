@@ -19,16 +19,13 @@ const REGION_SUBTITLES: Record<Region, string> = {
 
 export default function RegionPage() {
   const router = useRouter();
-  const [selected, setSelected] = useState<Region | null>(null);
+  const [selected, setSelected] = useState<Region | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.region ?? null) : null
+  );
 
   useEffect(() => {
     if (!getCurrentUser()) {
       router.push("/login");
-      return;
-    }
-    const profile = getProfile();
-    if (profile?.region) {
-      setSelected(profile.region);
     }
   }, [router]);
 

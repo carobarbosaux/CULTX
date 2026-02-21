@@ -7,7 +7,7 @@ export function ArticleNav() {
       <Link
         href="/feed"
         className="inline-flex items-center gap-1.5 transition-colors duration-[200ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
-        style={{ color: "var(--color-text-muted)" }}
+        style={{ color: "var(--color-text-secondary)" }}
         aria-label="Volver al inicio"
       >
         <CaretLeft size={14} weight="thin" />

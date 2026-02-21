@@ -38,26 +38,24 @@ const ChatContext = createContext<ChatStore | null>(null);
 
 const STORAGE_KEY = "cultx:chat";
 
+function loadPersistedMessages(): ChatMessage[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch {
+    // parse failed — start fresh
+  }
+  return [];
+}
+
 export function ChatProvider({ children }: { children: React.ReactNode }) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(loadPersistedMessages);
   const [chatMode, setChatModeState] = useState<ChatMode>("minimal");
   const [articleContext, setArticleContextState] = useState<string | null>(null);
-
-  // Load persisted messages from localStorage on mount (SSR-safe)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          setMessages(parsed);
-        }
-      }
-    } catch {
-      // If parse fails, start fresh — don't crash
-    }
-  }, []);
 
   // Persist messages to localStorage whenever they change (SSR-safe)
   useEffect(() => {

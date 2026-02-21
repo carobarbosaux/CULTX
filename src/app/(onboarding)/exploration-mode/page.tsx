@@ -17,16 +17,13 @@ const MODE_DESCRIPTORS: Record<ExplorationMode, string> = {
 
 export default function ExplorationModePage() {
   const router = useRouter();
-  const [selected, setSelected] = useState<ExplorationMode | null>(null);
+  const [selected, setSelected] = useState<ExplorationMode | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.explorationMode ?? null) : null
+  );
 
   useEffect(() => {
     if (!getCurrentUser()) {
       router.push("/login");
-      return;
-    }
-    const profile = getProfile();
-    if (profile?.explorationMode) {
-      setSelected(profile.explorationMode);
     }
   }, [router]);
 

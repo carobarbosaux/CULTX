@@ -7,7 +7,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
   const percentage = (current / total) * 100;
   return (
     <div className="w-full space-y-2">
-      <div className="flex justify-between text-xs" style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-ui)" }}>
+      <div className="flex justify-between text-xs" style={{ color: "var(--color-text-secondary)", fontFamily: "var(--font-ui)" }}>
         <span>Step {current} of {total}</span>
       </div>
       <div

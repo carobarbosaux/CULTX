@@ -46,7 +46,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
           className="inline-block rounded-full px-3 py-1 text-xs mb-5"
           style={{
             backgroundColor: "var(--color-surface-raised)",
-            color: "var(--color-text-muted)",
+            color: "var(--color-text-secondary)",
             fontFamily: "var(--font-ui)",
             border: "1px solid var(--color-border)",
           }}
@@ -76,7 +76,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
       <div className="border-t pt-5" style={{ borderColor: "var(--color-border)" }}>
         <div
           className="flex items-center gap-4 text-sm flex-wrap"
-          style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-muted)" }}
+          style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}
         >
           <span className="font-medium" style={{ color: "var(--color-text-secondary)" }}>
             {article.author}

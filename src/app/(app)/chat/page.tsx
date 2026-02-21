@@ -22,15 +22,11 @@ export default function ChatPage() {
     useChatStore();
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [profileType, setProfileType] = useState<string | null>(null);
+  const [profileType] = useState<string | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
-  // Load profile type on mount (SSR-safe — getProfile reads localStorage)
-  useEffect(() => {
-    const profile = getProfile();
-    setProfileType(profile?.profileType ?? null);
-  }, []);
 
   // Auto-scroll to bottom when new messages arrive or typing indicator toggles
   useEffect(() => {
@@ -138,7 +134,7 @@ export default function ChatPage() {
             style={{
               fontFamily: "var(--font-ui)",
               fontSize: "0.875rem",
-              color: "var(--color-text-muted)",
+              color: "var(--color-text-secondary)",
               margin: 0,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -227,7 +223,7 @@ export default function ChatPage() {
                   style={{
                     fontFamily: "var(--font-ui)",
                     fontSize: "0.9375rem",
-                    color: "var(--color-text-muted)",
+                    color: "var(--color-text-secondary)",
                     margin: 0,
                     maxWidth: "400px",
                     lineHeight: "1.6",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getProfile } from "@/lib/profile";
 import { getChatResponse } from "@/ai/chatResponder";
 import type { Article } from "@/lib/articles";
@@ -19,13 +19,10 @@ interface ArticlePageClientProps {
 
 export function ArticlePageClient({ article }: ArticlePageClientProps) {
   const [exploreText, setExploreText] = useState<string | null>(null);
-  const [profileType, setProfileType] = useState<string | null>(null);
+  const [profileType] = useState<string | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
+  );
   const { addMessage, setArticleContext, setChatMode, messages } = useChatStore();
-
-  useEffect(() => {
-    const profile = getProfile();
-    if (profile?.profileType) setProfileType(profile.profileType);
-  }, []);
 
   // "Llevar al chat" — quotes selected text and triggers an AI reply in the sidebar
   async function handleSendToChat(selectedText: string) {
@@ -50,7 +47,7 @@ export function ArticlePageClient({ article }: ArticlePageClientProps) {
       <div className="mx-auto w-full" style={{ maxWidth: "720px" }}>
         <ArticleNav />
         <ArticleHeader article={article} />
-        <ArticleToolbar />
+        <ArticleToolbar article={article} />
         <ArticleBody
           body={article.body}
           onExplore={(text) => setExploreText(text)}

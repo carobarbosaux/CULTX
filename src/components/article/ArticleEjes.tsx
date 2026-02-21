@@ -9,7 +9,6 @@ import type { Article } from "@/lib/articles";
 
 // Generate 3 contextual questions per article based on its tags and title
 function getEjes(article: Article): string[] {
-  const tag = article.tags[0] ?? "cultura";
   const title = article.title;
 
   // Tag-aware question templates

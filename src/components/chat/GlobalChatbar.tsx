@@ -1,6 +1,60 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { ArrowUp, ChatTeardrop, Microphone, Phone, X } from "@phosphor-icons/react";
+import { useRef, useState } from "react";
+import { ArrowUp, ChatTeardrop, Microphone, X } from "@phosphor-icons/react";
+
+// Simple tooltip wrapper — shows label above on hover
+function Tooltip({ label, children }: { label: string; children: React.ReactNode }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div
+      style={{ position: "relative", display: "inline-flex" }}
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+      onFocus={() => setVisible(true)}
+      onBlur={() => setVisible(false)}
+    >
+      {children}
+      <span
+        role="tooltip"
+        style={{
+          position: "absolute",
+          bottom: "calc(100% + 6px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          whiteSpace: "nowrap",
+          fontSize: "0.7rem",
+          fontFamily: "var(--font-ui)",
+          color: "var(--color-text-primary)",
+          backgroundColor: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "6px",
+          padding: "3px 8px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
+          pointerEvents: "none",
+          opacity: visible ? 1 : 0,
+          transition: "opacity 0.15s ease",
+          zIndex: 100,
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+// Horizontal waveform SVG icon for voice mode
+function WaveformIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <line x1="2"  y1="12" x2="2"  y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="6"  y1="8"  x2="6"  y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="10" y1="4"  x2="10" y2="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="14" y1="7"  x2="14" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="18" y1="9"  x2="18" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="22" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
 import { useChatStore } from "@/components/chat/ChatProvider";
 import { getChatResponse } from "@/ai/chatResponder";
 import { getProfile } from "@/lib/profile";
@@ -50,13 +104,10 @@ export function GlobalChatbar() {
   const [isFocused, setIsFocused] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isVoiceActive, setIsVoiceActive] = useState(false);
-  const [profileType, setProfileType] = useState<string | null>(null);
+  const [profileType] = useState<string | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
+  );
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const profile = getProfile();
-    setProfileType(profile?.profileType ?? null);
-  }, []);
 
   if (chatMode === "fullscreen") return null;
 
@@ -202,7 +253,6 @@ export function GlobalChatbar() {
           boxShadow: isExpanded
             ? "0 8px 32px rgba(0,0,0,0.14)"
             : "0 2px 10px rgba(0,0,0,0.08)",
-          overflow: "hidden",
         }}
       >
         {/* Article context badge */}
@@ -212,7 +262,7 @@ export function GlobalChatbar() {
               className="flex-1 truncate rounded-md px-2 py-0.5 text-xs"
               style={{
                 backgroundColor: "var(--color-surface-raised)",
-                color: "var(--color-text-muted)",
+                color: "var(--color-text-secondary)",
                 fontFamily: "var(--font-ui)",
               }}
             >
@@ -268,60 +318,62 @@ export function GlobalChatbar() {
           {/* Action buttons — visible when expanded */}
           {isExpanded && (
             <div className="flex items-center gap-1.5 flex-shrink-0 pb-0.5">
-              {/* Voice conversation */}
-              <button
-                type="button"
-                onClick={() => setChatMode("sidebar")}
-                aria-label="Iniciar conversación de voz"
-                title="Hablar con el compañero"
-                className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 hover:opacity-80"
-                style={{
-                  backgroundColor: "var(--color-surface-raised)",
-                  color: "var(--color-text-muted)",
-                  border: "1px solid var(--color-border)",
-                }}
-              >
-                <Phone size={14} weight="thin" />
-              </button>
+              {/* Voice mode */}
+              <Tooltip label="Modo de voz">
+                <button
+                  type="button"
+                  onClick={() => setChatMode("sidebar")}
+                  aria-label="Modo de voz"
+                  className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 hover:opacity-80"
+                  style={{
+                    backgroundColor: "var(--color-surface-raised)",
+                    color: "var(--color-text-secondary)",
+                    border: "1px solid var(--color-border)",
+                  }}
+                >
+                  <WaveformIcon size={14} />
+                </button>
+              </Tooltip>
 
-              {/* Dictate */}
-              <button
-                type="button"
-                onClick={() => setIsVoiceActive((v) => !v)}
-                aria-label={isVoiceActive ? "Detener dictado" : "Dictar mensaje"}
-                title={isVoiceActive ? "Detener dictado" : "Dictar mensaje"}
-                className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
-                style={{
-                  backgroundColor: isVoiceActive
-                    ? "var(--color-accent)"
-                    : "var(--color-surface-raised)",
-                  color: isVoiceActive ? "#fff" : "var(--color-text-muted)",
-                  border: isVoiceActive
-                    ? "1px solid var(--color-accent)"
-                    : "1px solid var(--color-border)",
-                }}
-              >
-                <Microphone size={14} weight={isVoiceActive ? "fill" : "thin"} />
-              </button>
-
-              {/* Send */}
-              <button
-                type="button"
-                onClick={handleSend}
-                aria-label="Enviar mensaje"
-                disabled={!inputValue.trim() || isTyping}
-                className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 disabled:opacity-40"
-                style={{
-                  backgroundColor:
-                    inputValue.trim() && !isTyping
-                      ? "var(--color-accent)"
-                      : "var(--color-surface-raised)",
-                  color:
-                    inputValue.trim() && !isTyping ? "#ffffff" : "var(--color-text-muted)",
-                }}
-              >
-                <ArrowUp size={15} weight="thin" />
-              </button>
+              {/* Dictate (default) → Send (when input has text) */}
+              {inputValue.trim() ? (
+                <Tooltip label="Enviar mensaje">
+                  <button
+                    type="button"
+                    onClick={handleSend}
+                    aria-label="Enviar mensaje"
+                    disabled={isTyping}
+                    className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
+                    style={{
+                      backgroundColor: "var(--color-accent)",
+                      color: "#ffffff",
+                      opacity: isTyping ? 0.5 : 1,
+                    }}
+                  >
+                    <ArrowUp size={15} weight="thin" />
+                  </button>
+                </Tooltip>
+              ) : (
+                <Tooltip label={isVoiceActive ? "Detener dictado" : "Dictar mensaje"}>
+                  <button
+                    type="button"
+                    onClick={() => setIsVoiceActive((v) => !v)}
+                    aria-label={isVoiceActive ? "Detener dictado" : "Dictar mensaje"}
+                    className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
+                    style={{
+                      backgroundColor: isVoiceActive
+                        ? "var(--color-accent)"
+                        : "var(--color-washi-200)",
+                      color: isVoiceActive ? "#fff" : "var(--color-text-secondary)",
+                      border: isVoiceActive
+                        ? "1px solid var(--color-accent)"
+                        : "1px solid var(--color-border)",
+                    }}
+                  >
+                    <Microphone size={14} weight={isVoiceActive ? "fill" : "thin"} />
+                  </button>
+                </Tooltip>
+              )}
             </div>
           )}
         </div>

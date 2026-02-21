@@ -22,9 +22,10 @@
   --color-surface: #ffffff;
   --color-surface-raised: var(--color-washi-100);
   --color-border: var(--color-washi-200);
-  --color-text-primary: var(--color-washi-900);
-  --color-text-secondary: var(--color-washi-600);
-  --color-text-muted: var(--color-washi-500);
+  --color-text-primary: var(--color-washi-900);   /* #2e2a26 — 15.6:1 on white ✓ */
+  --color-text-secondary: var(--color-washi-700); /* #6e6358 — 4.7:1 on white ✓ WCAG AA */
+  --color-text-muted: var(--color-washi-600);     /* #8f8070 — 3.1:1 — large text / decorative only */
+  --color-text-disabled: var(--color-washi-400);  /* intentionally low — disabled UI only */
   --color-accent: #4a6741;
   --color-accent-hover: #3a5232;
   --color-focus-ring: var(--color-sage-500);

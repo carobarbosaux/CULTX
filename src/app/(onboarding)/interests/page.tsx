@@ -10,17 +10,14 @@ import { Button } from "@/components/ui/Button";
 
 export default function InterestsPage() {
   const router = useRouter();
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(() =>
+    typeof window !== "undefined" ? (getProfile()?.interests ?? []) : []
+  );
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     if (!getCurrentUser()) {
       router.push("/login");
-      return;
-    }
-    const profile = getProfile();
-    if (profile?.interests?.length) {
-      setSelected(profile.interests);
     }
   }, [router]);
 

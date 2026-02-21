@@ -18,16 +18,13 @@ const DESCRIPTORS: Record<ProfileType, string> = {
 
 export default function ProfileTypePage() {
   const router = useRouter();
-  const [selected, setSelected] = useState<ProfileType | null>(null);
+  const [selected, setSelected] = useState<ProfileType | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
+  );
 
   useEffect(() => {
     if (!getCurrentUser()) {
       router.push("/login");
-      return;
-    }
-    const profile = getProfile();
-    if (profile?.profileType) {
-      setSelected(profile.profileType);
     }
   }, [router]);
 

@@ -1,16 +1,12 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { getCurrentUser, signOut as authSignOut } from "@/lib/auth";
 import type { UserProfile } from "@/lib/types";
 
 export function useAuth() {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setUser(getCurrentUser());
-    setIsLoading(false);
-  }, []);
+  const [user, setUser] = useState<UserProfile | null>(() =>
+    typeof window !== "undefined" ? getCurrentUser() : null
+  );
 
   const signOut = useCallback(() => {
     authSignOut();
@@ -20,7 +16,7 @@ export function useAuth() {
   return {
     user,
     isLoggedIn: user !== null,
-    isLoading,
+    isLoading: false,
     signOut,
   };
 }

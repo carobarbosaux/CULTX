@@ -15,8 +15,9 @@ interface ContextualExplorePanelProps {
 export function ContextualExplorePanel({
   selectedText,
   profileType,
-  articleId: _articleId,
   onClose,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  articleId: _articleId,
 }: ContextualExplorePanelProps) {
   // Close panel on Escape key while open.
   useEffect(() => {

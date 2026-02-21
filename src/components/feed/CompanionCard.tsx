@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X, Sparkle, Headphones, BookOpen } from "@phosphor-icons/react";
 
 const SUGGESTIONS = [
@@ -24,18 +24,14 @@ const SUGGESTIONS = [
 ];
 
 export function CompanionCard() {
-  const [dismissed, setDismissed] = useState(false);
-  const [suggestionIndex, setSuggestionIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const [dismissed, setDismissed] = useState(() =>
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("cultx:companion-dismissed") === "true"
+      : false
+  );
+  const [suggestionIndex] = useState(() => Math.floor(Math.random() * SUGGESTIONS.length));
 
-  useEffect(() => {
-    const wasDismissed = sessionStorage.getItem("cultx:companion-dismissed") === "true";
-    setDismissed(wasDismissed);
-    setSuggestionIndex(Math.floor(Math.random() * SUGGESTIONS.length));
-    setMounted(true);
-  }, []);
-
-  if (!mounted || dismissed) return null;
+  if (dismissed) return null;
 
   const suggestion = SUGGESTIONS[suggestionIndex];
   const Icon = suggestion.icon;

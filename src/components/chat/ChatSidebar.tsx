@@ -58,16 +58,12 @@ export function ChatSidebar() {
     useChatStore();
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [profileType, setProfileType] = useState<string | null>(null);
+  const [profileType] = useState<string | null>(() =>
+    typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
+  );
   const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
-  // Load profile type on mount (SSR-safe — getProfile reads localStorage)
-  useEffect(() => {
-    const profile = getProfile();
-    setProfileType(profile?.profileType ?? null);
-  }, []);
 
   // Auto-scroll to bottom when new messages arrive or typing indicator toggles
   useEffect(() => {
@@ -170,7 +166,7 @@ export function ChatSidebar() {
                   fontSize: "0.65rem",
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
-                  color: "var(--color-text-muted)",
+                  color: "var(--color-text-secondary)",
                   margin: 0,
                   lineHeight: 1.4,
                 }}
@@ -276,11 +272,11 @@ export function ChatSidebar() {
             gap: "8px",
           }}
         >
-          <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.75rem", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
+          <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.75rem", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
             Historial
           </p>
           {messages.length === 0 ? (
-            <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.875rem", color: "var(--color-text-muted)" }}>
+            <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
               No hay mensajes aún.
             </p>
           ) : (
@@ -344,7 +340,7 @@ export function ChatSidebar() {
               style={{
                 fontFamily: "var(--font-ui)",
                 fontSize: "0.875rem",
-                color: "var(--color-text-muted)",
+                color: "var(--color-text-secondary)",
                 textAlign: "center",
                 margin: 0,
               }}
