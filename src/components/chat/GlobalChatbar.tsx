@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatTeardrop, ArrowUp, ArrowsOut, X } from "@phosphor-icons/react";
 import { useChatStore } from "@/components/chat/ChatProvider";
+import { getChatResponse } from "@/ai/chatResponder";
+import { getProfile } from "@/lib/profile";
 
 // ────────────────────────────────────────────────────────────────────────────────
 // GlobalChatbar — multi-state chatbar using shared chatStore
@@ -11,12 +13,24 @@ import { useChatStore } from "@/components/chat/ChatProvider";
 //   drawer    → expanded input bar with context badge
 //   sidebar   → hidden (ConversationSidebar renders its own UI — plan 04-03)
 //   fullscreen → hidden (AIConversationPage renders its own UI — plan 04-04)
+//
+// Drawer send UX: after the user sends a message from the drawer, the chatbar
+// automatically switches to sidebar mode so the AI response is visible in the
+// larger, scrollable sidebar surface.
 // ────────────────────────────────────────────────────────────────────────────────
 
 export function GlobalChatbar() {
   const { chatMode, articleContext, messages, setChatMode, setArticleContext, addMessage } =
     useChatStore();
   const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [profileType, setProfileType] = useState<string | null>(null);
+
+  // Load profile type on mount (SSR-safe — getProfile reads localStorage)
+  useEffect(() => {
+    const profile = getProfile();
+    setProfileType(profile?.profileType ?? null);
+  }, []);
 
   // Sidebar and fullscreen modes: this component is invisible — those modes render
   // their own UI in their respective components.
@@ -57,12 +71,28 @@ export function GlobalChatbar() {
   }
 
   // ── Drawer state ────────────────────────────────────────────────────────────
-  function handleSend() {
+
+  async function handleSend() {
     const trimmed = inputValue.trim();
-    if (!trimmed) return;
+    if (!trimmed || isTyping) return;
     addMessage({ role: "user", content: trimmed });
     setInputValue("");
-    // AI response logic arrives in plan 04-04
+    setIsTyping(true);
+
+    // Simulate AI thinking: 800–1200ms random delay
+    await new Promise((r) => setTimeout(r, 800 + Math.random() * 400));
+
+    const response = getChatResponse({
+      userMessage: trimmed,
+      articleContext,
+      profileType,
+      messageCount: messages.length,
+    });
+    addMessage({ role: "assistant", content: response });
+    setIsTyping(false);
+
+    // Auto-expand to sidebar after responding so the user can read the full reply
+    setChatMode("sidebar");
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -117,6 +147,7 @@ export function GlobalChatbar() {
               onKeyDown={handleKeyDown}
               placeholder={placeholderText}
               rows={2}
+              disabled={isTyping}
               aria-label="Escribe tu pregunta al compañero cultural de IA"
               className="w-full resize-none rounded-lg border px-4 py-2.5 text-sm focus:outline-none transition-[border-color] duration-[200ms]"
               style={{
@@ -124,9 +155,13 @@ export function GlobalChatbar() {
                 backgroundColor: "var(--color-bg)",
                 color: "var(--color-text-primary)",
                 fontFamily: "var(--font-ui)",
+                cursor: isTyping ? "not-allowed" : "text",
+                opacity: isTyping ? 0.5 : 1,
               }}
               onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--color-accent)";
+                if (!isTyping) {
+                  e.currentTarget.style.borderColor = "var(--color-accent)";
+                }
               }}
               onBlur={(e) => {
                 e.currentTarget.style.borderColor = "var(--color-border)";
@@ -163,13 +198,15 @@ export function GlobalChatbar() {
               type="button"
               onClick={handleSend}
               aria-label="Enviar mensaje"
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || isTyping}
               className="p-1.5 rounded-full transition-colors duration-[200ms] disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
               style={{
-                backgroundColor: inputValue.trim()
-                  ? "var(--color-accent)"
-                  : "var(--color-surface-raised)",
-                color: inputValue.trim() ? "#ffffff" : "var(--color-text-muted)",
+                backgroundColor:
+                  inputValue.trim() && !isTyping
+                    ? "var(--color-accent)"
+                    : "var(--color-surface-raised)",
+                color:
+                  inputValue.trim() && !isTyping ? "#ffffff" : "var(--color-text-muted)",
               }}
             >
               <ArrowUp size={16} weight="thin" />
@@ -178,13 +215,23 @@ export function GlobalChatbar() {
         </div>
 
         {/* Conversation history preview (last message, if any) */}
-        {messages.length > 0 && (
+        {messages.length > 0 && !isTyping && (
           <p
             className="truncate text-xs opacity-60"
             style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-muted)" }}
           >
             {messages[messages.length - 1].role === "user" ? "Tú: " : "IA: "}
             {messages[messages.length - 1].content}
+          </p>
+        )}
+
+        {/* Typing indicator preview while waiting in drawer */}
+        {isTyping && (
+          <p
+            className="text-xs opacity-60 italic"
+            style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-muted)" }}
+          >
+            El compañero cultural está escribiendo…
           </p>
         )}
       </div>

@@ -9,6 +9,9 @@ import {
   ChatTeardrop,
 } from "@phosphor-icons/react";
 import { useChatStore } from "@/components/chat/ChatProvider";
+import { getChatResponse } from "@/ai/chatResponder";
+import { getProfile } from "@/lib/profile";
+import { TypingIndicator } from "@/components/chat/TypingIndicator";
 
 // ────────────────────────────────────────────────────────────────────────────────
 // ChatSidebar — P08b
@@ -22,13 +25,21 @@ export function ChatSidebar() {
   const { messages, articleContext, chatMode, setChatMode, addMessage } =
     useChatStore();
   const [inputValue, setInputValue] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [profileType, setProfileType] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Auto-scroll to bottom when new messages arrive
+  // Load profile type on mount (SSR-safe — getProfile reads localStorage)
+  useEffect(() => {
+    const profile = getProfile();
+    setProfileType(profile?.profileType ?? null);
+  }, []);
+
+  // Auto-scroll to bottom when new messages arrive or typing indicator toggles
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isTyping]);
 
   // Only render in sidebar mode
   if (chatMode !== "sidebar") {
@@ -39,12 +50,22 @@ export function ChatSidebar() {
     ? `Pregunta sobre «${articleContext}»…`
     : "Escribe tu pregunta…";
 
-  function handleSend() {
+  async function handleSend() {
     const trimmed = inputValue.trim();
-    if (!trimmed) return;
+    if (!trimmed || isTyping) return;
     addMessage({ role: "user", content: trimmed });
     setInputValue("");
-    // AI response wiring arrives in plan 04-04
+    setIsTyping(true);
+    // Simulate AI thinking: 800–1200ms random delay
+    await new Promise((r) => setTimeout(r, 800 + Math.random() * 400));
+    const response = getChatResponse({
+      userMessage: trimmed,
+      articleContext,
+      profileType,
+      messageCount: messages.length,
+    });
+    addMessage({ role: "assistant", content: response });
+    setIsTyping(false);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -202,7 +223,7 @@ export function ChatSidebar() {
           gap: "12px",
         }}
       >
-        {messages.length === 0 ? (
+        {messages.length === 0 && !isTyping ? (
           /* Empty state */
           <div
             style={{
@@ -233,40 +254,46 @@ export function ChatSidebar() {
             </p>
           </div>
         ) : (
-          messages.map((msg) => (
-            <div
-              key={msg.id}
-              style={{
-                display: "flex",
-                justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-              }}
-            >
+          <>
+            {messages.map((msg) => (
               <div
+                key={msg.id}
                 style={{
-                  maxWidth: "80%",
-                  padding: "8px 12px",
-                  fontFamily: "var(--font-ui)",
-                  fontSize: "0.875rem",
-                  lineHeight: "1.6",
-                  ...(msg.role === "user"
-                    ? {
-                        backgroundColor: "var(--color-accent)",
-                        color: "#ffffff",
-                        borderRadius:
-                          "var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg)",
-                      }
-                    : {
-                        backgroundColor: "var(--color-surface-raised)",
-                        color: "var(--color-text-primary)",
-                        borderRadius:
-                          "var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm)",
-                      }),
+                  display: "flex",
+                  justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
                 }}
               >
-                {msg.content}
+                <div
+                  style={{
+                    maxWidth: "80%",
+                    padding: "8px 12px",
+                    fontFamily: "var(--font-ui)",
+                    fontSize: "0.875rem",
+                    lineHeight: "1.6",
+                    whiteSpace: "pre-wrap",
+                    ...(msg.role === "user"
+                      ? {
+                          backgroundColor: "var(--color-accent)",
+                          color: "#ffffff",
+                          borderRadius:
+                            "var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg)",
+                        }
+                      : {
+                          backgroundColor: "var(--color-surface-raised)",
+                          color: "var(--color-text-primary)",
+                          borderRadius:
+                            "var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm)",
+                        }),
+                  }}
+                >
+                  {msg.content}
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+
+            {/* Typing indicator — shown while AI is generating a response */}
+            {isTyping && <TypingIndicator />}
+          </>
         )}
         {/* Dummy div for auto-scroll anchor */}
         <div ref={messagesEndRef} />
@@ -290,6 +317,7 @@ export function ChatSidebar() {
           onKeyDown={handleKeyDown}
           placeholder={placeholderText}
           rows={1}
+          disabled={isTyping}
           aria-label="Escribe tu pregunta al compañero cultural de IA"
           style={{
             flex: 1,
@@ -304,9 +332,13 @@ export function ChatSidebar() {
             outline: "none",
             lineHeight: "1.5",
             transition: "border-color 0.2s",
+            cursor: isTyping ? "not-allowed" : "text",
+            opacity: isTyping ? 0.5 : 1,
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = "var(--color-accent)";
+            if (!isTyping) {
+              e.currentTarget.style.borderColor = "var(--color-accent)";
+            }
           }}
           onBlur={(e) => {
             e.currentTarget.style.borderColor = "var(--color-border)";
@@ -316,21 +348,23 @@ export function ChatSidebar() {
           type="button"
           onClick={handleSend}
           aria-label="Enviar mensaje"
-          disabled={!inputValue.trim()}
+          disabled={!inputValue.trim() || isTyping}
           style={{
             padding: "8px",
             borderRadius: "50%",
             border: "none",
-            cursor: inputValue.trim() ? "pointer" : "default",
-            backgroundColor: inputValue.trim()
-              ? "var(--color-accent)"
-              : "var(--color-surface-raised)",
-            color: inputValue.trim() ? "#ffffff" : "var(--color-text-muted)",
+            cursor: inputValue.trim() && !isTyping ? "pointer" : "default",
+            backgroundColor:
+              inputValue.trim() && !isTyping
+                ? "var(--color-accent)"
+                : "var(--color-surface-raised)",
+            color:
+              inputValue.trim() && !isTyping ? "#ffffff" : "var(--color-text-muted)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             transition: "background-color 0.2s, opacity 0.2s",
-            opacity: inputValue.trim() ? 1 : 0.4,
+            opacity: inputValue.trim() && !isTyping ? 1 : 0.4,
             flexShrink: 0,
           }}
         >
