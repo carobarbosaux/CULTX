@@ -41,24 +41,24 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Contextual Exploration (AI Feature)
 
-- [ ] **CTX-01**: User can select text in an article to trigger a floating "Explore" action button
-- [ ] **CTX-02**: Clicking "Explore" opens a contextual side panel without removing user from the article
-- [ ] **CTX-03**: Side panel displays a simulated AI response (cultural context, expanded explanation)
-- [ ] **CTX-04**: Side panel shows related articles links
-- [ ] **CTX-05**: Side panel response depth label adapts to user profile type (general vs academic label)
-- [ ] **CTX-06**: User can dismiss the contextual panel and return to reading
+- [x] **CTX-01**: User can select text in an article to trigger a floating "Explore" action button
+- [x] **CTX-02**: Clicking "Explore" opens a contextual side panel without removing user from the article
+- [x] **CTX-03**: Side panel displays a simulated AI response (cultural context, expanded explanation)
+- [x] **CTX-04**: Side panel shows related articles links
+- [x] **CTX-05**: Side panel response depth label adapts to user profile type (general vs academic label)
+- [x] **CTX-06**: User can dismiss the contextual panel and return to reading
 
 ### AI Conversation (Chat)
 
 - [ ] **CHAT-01**: Global Chatbar is visible at bottom of screen in minimal state with context-aware placeholder
 - [ ] **CHAT-02**: Chatbar expands into a drawer when user focuses/clicks it
-- [ ] **CHAT-03**: User can open AI chat as a persistent sidebar (article remains visible alongside)
-- [ ] **CHAT-04**: User can expand AI chat to fullscreen conversation mode
-- [ ] **CHAT-05**: User can collapse fullscreen back to sidebar or minimal chatbar
+- [x] **CHAT-03**: User can open AI chat as a persistent sidebar (article remains visible alongside)
+- [x] **CHAT-04**: User can expand AI chat to fullscreen conversation mode
+- [x] **CHAT-05**: User can collapse fullscreen back to sidebar or minimal chatbar
 - [ ] **CHAT-06**: "Send to Chat" action in article passes article title + summary context to AI chat
-- [ ] **CHAT-07**: AI chat sidebar shows conversation history within the session
+- [x] **CHAT-07**: AI chat sidebar shows conversation history within the session
 - [ ] **CHAT-08**: AI responses in chat are simulated (placeholder text that feels contextually aware)
-- [ ] **CHAT-09**: Chat context displays current article awareness ("Discussing: [article title]")
+- [x] **CHAT-09**: Chat context displays current article awareness ("Discussing: [article title]")
 
 ### Explore Mexico Map
 
@@ -160,21 +160,21 @@ Deferred to future release.
 | ART-05 | Phase 3 | Pending |
 | ART-06 | Phase 3 | Pending |
 | ART-07 | Phase 3 | Pending |
-| CTX-01 | Phase 4 | Pending |
-| CTX-02 | Phase 4 | Pending |
-| CTX-03 | Phase 4 | Pending |
-| CTX-04 | Phase 4 | Pending |
-| CTX-05 | Phase 4 | Pending |
-| CTX-06 | Phase 4 | Pending |
+| CTX-01 | Phase 4 | Complete |
+| CTX-02 | Phase 4 | Complete |
+| CTX-03 | Phase 4 | Complete |
+| CTX-04 | Phase 4 | Complete |
+| CTX-05 | Phase 4 | Complete |
+| CTX-06 | Phase 4 | Complete |
 | CHAT-01 | Phase 4 | Pending |
 | CHAT-02 | Phase 4 | Pending |
-| CHAT-03 | Phase 4 | Pending |
-| CHAT-04 | Phase 4 | Pending |
-| CHAT-05 | Phase 4 | Pending |
+| CHAT-03 | Phase 4 | Complete |
+| CHAT-04 | Phase 4 | Complete |
+| CHAT-05 | Phase 4 | Complete |
 | CHAT-06 | Phase 4 | Pending |
-| CHAT-07 | Phase 4 | Pending |
+| CHAT-07 | Phase 4 | Complete |
 | CHAT-08 | Phase 4 | Pending |
-| CHAT-09 | Phase 4 | Pending |
+| CHAT-09 | Phase 4 | Complete |
 | MAP-01 | Phase 5 | Pending |
 | MAP-02 | Phase 5 | Pending |
 | MAP-03 | Phase 5 | Pending |
