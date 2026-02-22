@@ -9,7 +9,6 @@ import { ArticleHeader } from "@/components/article/ArticleHeader";
 import { ArticleToolbar } from "@/components/article/ArticleToolbar";
 import { ArticleBody } from "@/components/article/ArticleBody";
 import { ArticleEjes } from "@/components/article/ArticleEjes";
-import { ContextualExplorePanel } from "@/components/article/ContextualExplorePanel";
 import { NewsletterCTA } from "@/components/article/NewsletterCTA";
 import { useChatStore } from "@/components/chat/ChatProvider";
 
@@ -18,19 +17,17 @@ interface ArticlePageClientProps {
 }
 
 export function ArticlePageClient({ article }: ArticlePageClientProps) {
-  const [exploreText, setExploreText] = useState<string | null>(null);
   const [profileType] = useState<string | null>(() =>
     typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
   );
-  const { addMessage, setArticleContext, setChatMode, messages } = useChatStore();
+  const { addMessage, setArticleContext, setChatMode, setQuotedText, messages } = useChatStore();
 
-  // "Llevar al chat" — quotes selected text and triggers an AI reply in the sidebar
-  async function handleSendToChat(selectedText: string) {
+  // "Explore topic" — sends selected text directly to the sidebar and triggers an AI reply
+  async function handleExplore(selectedText: string) {
     const truncated = selectedText.length > 200 ? selectedText.slice(0, 200) + "…" : selectedText;
-    const question = `«${truncated}»\n\n¿Puedes profundizar en este fragmento?`;
     setArticleContext(article.title);
     setChatMode("sidebar");
-    addMessage({ role: "user", content: question });
+    addMessage({ role: "user", content: truncated });
 
     await new Promise((r) => setTimeout(r, 800 + Math.random() * 400));
     const response = getChatResponse({
@@ -42,6 +39,14 @@ export function ArticlePageClient({ article }: ArticlePageClientProps) {
     addMessage({ role: "assistant", content: response });
   }
 
+  // "Send to chat" — places selected text as a quote in the chatbar for the user to compose around
+  function handleSendToChat(selectedText: string) {
+    const truncated = selectedText.length > 200 ? selectedText.slice(0, 200) + "…" : selectedText;
+    setArticleContext(article.title);
+    setQuotedText(truncated);
+    setChatMode("sidebar");
+  }
+
   return (
     <article className="min-h-screen px-4 py-12">
       <div className="mx-auto w-full" style={{ maxWidth: "720px" }}>
@@ -50,19 +55,13 @@ export function ArticlePageClient({ article }: ArticlePageClientProps) {
         <ArticleToolbar article={article} />
         <ArticleBody
           body={article.body}
-          onExplore={(text) => setExploreText(text)}
+          onExplore={handleExplore}
           onSendToChat={handleSendToChat}
         />
         <ArticleEjes article={article} />
         <NewsletterCTA />
       </div>
 
-      <ContextualExplorePanel
-        selectedText={exploreText}
-        profileType={profileType}
-        articleId={article.id}
-        onClose={() => setExploreText(null)}
-      />
     </article>
   );
 }

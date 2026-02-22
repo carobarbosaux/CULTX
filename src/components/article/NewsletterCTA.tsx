@@ -16,7 +16,7 @@ export function NewsletterCTA() {
     <section
       className="mt-16 rounded-2xl px-8 py-10 text-center"
       style={{ backgroundColor: "var(--color-surface-raised)" }}
-      aria-label="Suscripción al boletín"
+      aria-label="Newsletter subscription"
     >
       <Envelope
         size={28}
@@ -34,7 +34,7 @@ export function NewsletterCTA() {
               color: "var(--color-text-primary)",
             }}
           >
-            ¡Gracias por suscribirte!
+            Thanks for subscribing!
           </h2>
           <p
             className="text-sm"
@@ -43,7 +43,7 @@ export function NewsletterCTA() {
               color: "var(--color-text-muted)",
             }}
           >
-            Recibirás el próximo boletín cultural cada semana.
+            You'll receive the next cultural brief every week.
           </p>
         </>
       ) : (
@@ -55,7 +55,7 @@ export function NewsletterCTA() {
               color: "var(--color-text-primary)",
             }}
           >
-            El boletín cultural de la semana
+            The weekly cultural brief
           </h2>
           <p
             className="text-sm mb-6 max-w-xs mx-auto"
@@ -64,21 +64,21 @@ export function NewsletterCTA() {
               color: "var(--color-text-secondary)",
             }}
           >
-            Selección editorial, hilos culturales y una pregunta para reflexionar. Cada semana.
+            Editorial picks, cultural threads, and a question to reflect on. Every week.
           </p>
           <form
             onSubmit={handleSubmit}
             className="flex flex-col sm:flex-row gap-2 max-w-sm mx-auto"
           >
             <label htmlFor="newsletter-email" className="sr-only">
-              Correo electrónico
+              Email address
             </label>
             <input
               id="newsletter-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@correo.com"
+              placeholder="you@email.com"
               required
               className="flex-1 rounded-lg border px-4 py-2.5 text-sm focus:outline-none transition-[border-color] duration-[200ms]"
               style={{
@@ -103,7 +103,7 @@ export function NewsletterCTA() {
                 fontFamily: "var(--font-ui)",
               }}
             >
-              Suscribirme
+              Subscribe
             </button>
           </form>
           <p
@@ -113,7 +113,7 @@ export function NewsletterCTA() {
               color: "var(--color-text-muted)",
             }}
           >
-            Sin spam. Cancela cuando quieras.
+            No spam. Cancel anytime.
           </p>
         </>
       )}

@@ -13,8 +13,10 @@ interface AppShellProps {
 export function AppShell({ children, showNav = true }: AppShellProps) {
   const { chatMode } = useChatStore();
 
-  // When sidebar is open, push content left to avoid being hidden behind the 380px panel
-  const mainPaddingRight = chatMode === "sidebar" ? "380px" : undefined;
+  // Push content left to avoid being hidden behind the sidebar/fullscreen panel
+  const mainPaddingRight =
+    chatMode === "fullscreen" ? "min(720px, 100vw)" :
+    chatMode === "sidebar" ? "380px" : undefined;
 
   return (
     <div

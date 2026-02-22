@@ -12,24 +12,18 @@ export function ArticleCard({ article }: ArticleCardProps) {
       <Card
         className="h-full hover:shadow-md transition-shadow duration-[200ms] cursor-pointer overflow-hidden"
       >
-        {/* Cover image placeholder */}
-        <div
-          style={{
-            aspectRatio: "16/9",
-            backgroundColor: "var(--color-surface-raised)",
-            borderBottom: "1px solid var(--color-border)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "var(--color-text-muted)",
-          }}
-          aria-hidden="true"
-        >
-          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-            <rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="10" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M2 22 L9 16 L14 20 L20 14 L30 22" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-          </svg>
+        <div style={{ aspectRatio: "16/9", overflow: "hidden", borderBottom: "1px solid var(--color-border)" }}>
+          {article.imageUrl ? (
+            <img
+              src={article.imageUrl}
+              alt={article.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            <div style={{ width: "100%", height: "100%", backgroundColor: "var(--color-surface-raised)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)" }} aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" /><circle cx="10" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" /><path d="M2 22 L9 16 L14 20 L20 14 L30 22" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
+            </div>
+          )}
         </div>
 
         <div className="p-5">

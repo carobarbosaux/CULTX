@@ -20,9 +20,12 @@ export interface ChatStore {
   chatMode: ChatMode;
   /** The article title currently being discussed (null if no article context). */
   articleContext: string | null;
+  /** Selected text quoted into the chatbar — user composes around it before sending. */
+  quotedText: string | null;
   addMessage: (msg: Omit<ChatMessage, "id" | "timestamp">) => void;
   setChatMode: (mode: ChatMode) => void;
   setArticleContext: (title: string | null) => void;
+  setQuotedText: (text: string | null) => void;
   clearMessages: () => void;
 }
 
@@ -56,6 +59,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<ChatMessage[]>(loadPersistedMessages);
   const [chatMode, setChatModeState] = useState<ChatMode>("minimal");
   const [articleContext, setArticleContextState] = useState<string | null>(null);
+  const [quotedText, setQuotedTextState] = useState<string | null>(null);
 
   // Persist messages to localStorage whenever they change (SSR-safe)
   useEffect(() => {
@@ -84,6 +88,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setArticleContextState(title);
   }, []);
 
+  const setQuotedText = useCallback((text: string | null) => {
+    setQuotedTextState(text);
+  }, []);
+
   const clearMessages = useCallback(() => {
     setMessages([]);
     if (typeof window !== "undefined") {
@@ -99,9 +107,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     messages,
     chatMode,
     articleContext,
+    quotedText,
     addMessage,
     setChatMode,
     setArticleContext,
+    setQuotedText,
     clearMessages,
   };
 

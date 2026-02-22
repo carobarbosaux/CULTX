@@ -44,7 +44,7 @@ export function ContextualExplorePanel({
     <div
       aria-modal="true"
       role="dialog"
-      aria-label="Panel de exploración contextual"
+      aria-label="Contextual explore panel"
       style={{
         position: "fixed",
         inset: 0,
@@ -102,7 +102,7 @@ export function ContextualExplorePanel({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Cerrar panel"
+            aria-label="Close panel"
             style={{
               background: "none",
               border: "none",
@@ -173,7 +173,7 @@ export function ContextualExplorePanel({
               fontWeight: 500,
             }}
           >
-            Artículos relacionados
+            Related articles
           </span>
 
           <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6px" }}>

@@ -34,8 +34,8 @@ export default function ChatPage() {
   }, [messages, isTyping]);
 
   const placeholderText = articleContext
-    ? `Pregunta sobre «${articleContext}»…`
-    : "Escribe tu pregunta…";
+    ? `Ask about «${articleContext}»…`
+    : "Type your question…";
 
   async function handleSend() {
     const trimmed = inputValue.trim();
@@ -99,7 +99,7 @@ export default function ChatPage() {
         <button
           type="button"
           onClick={handleBack}
-          aria-label="Volver al artículo"
+          aria-label="Go back"
           style={{
             display: "flex",
             alignItems: "center",
@@ -118,7 +118,7 @@ export default function ChatPage() {
           onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
         >
           <CaretLeft size={16} weight="thin" />
-          Volver al artículo
+          Go back
         </button>
 
         {/* Center — article context label */}
@@ -142,8 +142,8 @@ export default function ChatPage() {
             }}
           >
             {articleContext
-              ? `Discutiendo: ${articleContext}`
-              : "Conversación cultural"}
+              ? `Discussing: ${articleContext}`
+              : "Cultural conversation"}
           </p>
         </div>
 
@@ -151,7 +151,7 @@ export default function ChatPage() {
         <button
           type="button"
           onClick={handleClearMessages}
-          aria-label="Limpiar conversación"
+          aria-label="Clear conversation"
           style={{
             display: "flex",
             alignItems: "center",
@@ -217,7 +217,7 @@ export default function ChatPage() {
                     fontWeight: 600,
                   }}
                 >
-                  Empieza a explorar la cultura mexicana
+                  Start exploring Mexican culture
                 </h2>
                 <p
                   style={{
@@ -229,8 +229,8 @@ export default function ChatPage() {
                     lineHeight: "1.6",
                   }}
                 >
-                  Pregunta sobre lo que acabas de leer, un movimiento cultural,
-                  un artista…
+                  Ask about what you just read, a cultural movement,
+                  an artist…
                 </p>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function ChatPage() {
             placeholder={placeholderText}
             rows={2}
             disabled={isTyping}
-            aria-label="Escribe tu pregunta al compañero cultural de IA"
+            aria-label="Type your question to the AI cultural companion"
             style={{
               flex: 1,
               resize: "none",
@@ -338,7 +338,7 @@ export default function ChatPage() {
           <button
             type="button"
             onClick={handleSend}
-            aria-label="Enviar mensaje"
+            aria-label="Send message"
             disabled={!inputValue.trim() || isTyping}
             style={{
               padding: "10px",

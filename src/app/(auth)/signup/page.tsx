@@ -44,12 +44,13 @@ export default function SignupPage() {
 
   return (
     <div className="w-full max-w-sm">
-      <p
-        className="text-center text-2xl font-semibold tracking-wide mb-8"
+      <Link
+        href="/feed"
+        className="block text-center text-2xl font-semibold tracking-wide mb-8 hover:opacity-80 transition-opacity"
         style={{ fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}
       >
         CULTX
-      </p>
+      </Link>
 
       <Card className="p-8">
         <h1

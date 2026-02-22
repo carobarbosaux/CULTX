@@ -8,14 +8,14 @@ export function ArticleNav() {
         href="/feed"
         className="inline-flex items-center gap-1.5 transition-colors duration-[200ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
         style={{ color: "var(--color-text-secondary)" }}
-        aria-label="Volver al inicio"
+        aria-label="Back to home"
       >
         <CaretLeft size={14} weight="thin" />
         <span
           className="text-xs uppercase tracking-widest"
           style={{ fontFamily: "var(--font-ui)" }}
         >
-          Inicio
+          Home
         </span>
       </Link>
     </nav>

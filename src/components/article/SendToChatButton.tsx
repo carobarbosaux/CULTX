@@ -34,7 +34,7 @@ export function SendToChatButton({ articleTitle }: SendToChatButtonProps) {
         }}
       >
         <ChatTeardrop size={16} weight="thin" />
-        Enviar al chat
+        Send to chat
       </button>
 
       {showConfirmation && (
@@ -47,7 +47,7 @@ export function SendToChatButton({ articleTitle }: SendToChatButtonProps) {
             color: "var(--color-text-muted)",
           }}
         >
-          Artículo enviado al chat
+          Article sent to chat
         </p>
       )}
     </div>

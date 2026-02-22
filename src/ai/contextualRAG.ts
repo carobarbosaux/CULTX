@@ -17,25 +17,25 @@ export interface ContextualResponse {
 // Pre-written cultural responses about Mexican art/history/culture (5 variants).
 // Selected deterministically by: selectedText.length % 5
 const CULTURAL_EXPLANATIONS: string[] = [
-  "El muralismo mexicano emergió como respuesta a la Revolución de 1910, buscando crear un arte público accesible para todos los ciudadanos. Artistas como Diego Rivera y José Clemente Orozco transformaron paredes de edificios públicos en narrativas épicas de identidad nacional.",
+  "Mexican muralism emerged as a response to the Revolution of 1910, seeking to create a public art accessible to all citizens. Artists like Diego Rivera and José Clemente Orozco transformed the walls of public buildings into epic narratives of national identity.",
 
-  "La arquitectura prehispánica en México refleja una profunda comprensión astronómica. Los templos estaban alineados para capturar los equinoccios, convirtiendo cada edificio en un instrumento de medición del tiempo sagrado.",
+  "Pre-Hispanic architecture in Mexico reflects a profound astronomical understanding. Temples were aligned to capture the equinoxes, turning each building into an instrument for measuring sacred time.",
 
-  "El teatro de calle en México tiene raíces en los 'pastorelas' coloniales y las danzas rituales indígenas. Esta tradición híbrida sigue viva en festivales comunitarios donde lo sagrado y lo festivo se entrelazan.",
+  "Street theater in Mexico has roots in colonial 'pastorelas' and indigenous ritual dances. This hybrid tradition remains alive in community festivals where the sacred and the festive intertwine.",
 
-  "La cerámica de Talavera de Puebla es Patrimonio Cultural Inmaterial de la UNESCO desde 2019. Su técnica de esmalte en dos cocciones fue traída por artesanos españoles en el siglo XVI y fusionada con tradiciones locales.",
+  "Talavera ceramics from Puebla have been a UNESCO Intangible Cultural Heritage since 2019. The double-fired enamel technique was brought by Spanish artisans in the 16th century and fused with local traditions.",
 
-  "El son jarocho es mucho más que música: es un sistema de convivencia social llamado 'fandango'. Las tarimas donde se zapatea no son escenario sino espacio comunitario donde todos participan.",
+  "Son jarocho is much more than music: it is a system of social gathering called 'fandango'. The wooden platforms where dancers stomp are not a stage but a communal space where everyone participates.",
 ];
 
 // Simulated academic reference appended for Academic / Cultural professional profiles.
 const ACADEMIC_REFERENCE =
-  "\n\nReferencias: [Fuente simulada] Florescano, E. (2006). *Imágenes de la patria*. México: Taurus.";
+  "\n\nReferences: [Simulated source] Florescano, E. (2006). *Images of the Homeland*. Mexico: Taurus.";
 
 // Static related article links referenced in the data layer.
 const RELATED_LINKS: Array<{ title: string; id: string }> = [
-  { title: "El muralismo y la identidad nacional", id: "articulo-muralismo-rivera" },
-  { title: "Talavera: patrimonio vivo de Puebla", id: "articulo-talavera-puebla" },
+  { title: "Muralism and national identity", id: "articulo-muralismo-rivera" },
+  { title: "Talavera: living heritage of Puebla", id: "articulo-talavera-puebla" },
 ];
 
 /**

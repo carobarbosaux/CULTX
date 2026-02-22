@@ -119,11 +119,11 @@ export function TextSelectionTrigger({ children, onExplore, onSendToChat }: Text
             border: "1px solid var(--color-accent-hover)",
           }}
         >
-          {/* Profundizar tema */}
+          {/* Explore topic */}
           <button
             type="button"
             onClick={handleExploreClick}
-            aria-label="Profundizar tema"
+            aria-label="Explore topic"
             style={{
               ...btnBase,
               backgroundColor: "var(--color-accent)",
@@ -134,17 +134,17 @@ export function TextSelectionTrigger({ children, onExplore, onSendToChat }: Text
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
             <Sparkle size={13} weight="fill" />
-            Profundizar tema
+            Explore topic
           </button>
 
           {/* Divider */}
           <span style={{ width: "1px", height: "28px", backgroundColor: "var(--color-accent-hover)" }} aria-hidden="true" />
 
-          {/* Llevar al chat */}
+          {/* Send to chat */}
           <button
             type="button"
             onClick={handleSendToChatClick}
-            aria-label="Llevar al chat"
+            aria-label="Send to chat"
             style={{
               ...btnBase,
               backgroundColor: "var(--color-accent)",
@@ -155,7 +155,7 @@ export function TextSelectionTrigger({ children, onExplore, onSendToChat }: Text
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
             <ArrowBendUpRight size={13} weight="thin" />
-            Llevar al chat
+            Send to chat
           </button>
         </div>
       )}

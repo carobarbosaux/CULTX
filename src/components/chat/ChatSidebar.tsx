@@ -1,16 +1,31 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
+  ArrowsIn,
   ArrowsOut,
   ArrowUp,
   ChatTeardrop,
   ClockCounterClockwise,
+  Microphone,
   NotePencil,
   X,
-} from "@phosphor-icons/react";
+} from "@phosphor-icons/react/dist/ssr";
+
+// Waveform SVG — matches GlobalChatbar's voice icon
+function WaveformIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <line x1="2"  y1="12" x2="2"  y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="6"  y1="8"  x2="6"  y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="10" y1="4"  x2="10" y2="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="14" y1="7"  x2="14" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="18" y1="9"  x2="18" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="22" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 // Render assistant message content — parses [text](/url) into real links
 function MessageContent({ content }: { content: string }) {
@@ -54,7 +69,7 @@ import { TypingIndicator } from "@/components/chat/TypingIndicator";
 // ────────────────────────────────────────────────────────────────────────────────
 
 export function ChatSidebar() {
-  const { messages, articleContext, chatMode, setChatMode, addMessage, clearMessages } =
+  const { messages, articleContext, chatMode, quotedText, setChatMode, addMessage, clearMessages, setQuotedText } =
     useChatStore();
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -62,28 +77,34 @@ export function ChatSidebar() {
     typeof window !== "undefined" ? (getProfile()?.profileType ?? null) : null
   );
   const [showHistory, setShowHistory] = useState(false);
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+
+  const isFullscreen = chatMode === "fullscreen";
 
   // Auto-scroll to bottom when new messages arrive or typing indicator toggles
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Only render in sidebar mode
-  if (chatMode !== "sidebar") {
+  // Only render in sidebar or fullscreen mode
+  if (chatMode !== "sidebar" && chatMode !== "fullscreen") {
     return null;
   }
 
   const placeholderText = articleContext
-    ? `Pregunta sobre «${articleContext}»…`
-    : "Escribe tu pregunta…";
+    ? `Ask about «${articleContext}»…`
+    : "Type your question…";
 
   async function handleSend() {
     const trimmed = inputValue.trim();
-    if (!trimmed || isTyping) return;
-    addMessage({ role: "user", content: trimmed });
+    if ((!trimmed && !quotedText) || isTyping) return;
+    const fullContent = quotedText
+      ? `> ${quotedText}\n\n${trimmed}`.trim()
+      : trimmed;
+    addMessage({ role: "user", content: fullContent });
     setInputValue("");
+    setQuotedText(null);
     setIsTyping(true);
     // Simulate AI thinking: 800–1200ms random delay
     await new Promise((r) => setTimeout(r, 800 + Math.random() * 400));
@@ -105,10 +126,8 @@ export function ChatSidebar() {
     }
   }
 
-  function handleExpandToFullscreen() {
-    // Navigate to fullscreen chat — chatMode stays "sidebar" until the page
-    // sets it; the back button on /chat sets it back to "sidebar" on return.
-    router.push("/chat");
+  function handleToggleFullscreen() {
+    setChatMode(isFullscreen ? "sidebar" : "fullscreen");
   }
 
   function handleCollapse() {
@@ -132,10 +151,10 @@ export function ChatSidebar() {
     <div
       style={{
         position: "fixed",
-        top: 0,
+        top: "56px",
         right: 0,
-        width: "380px",
-        height: "100vh",
+        width: isFullscreen ? "min(720px, 100vw)" : "380px",
+        height: "calc(100vh - 56px)",
         zIndex: 30,
         display: "flex",
         flexDirection: "column",
@@ -171,7 +190,7 @@ export function ChatSidebar() {
                   lineHeight: 1.4,
                 }}
               >
-                Discutiendo:
+                Discussing:
               </p>
               <p
                 style={{
@@ -199,7 +218,7 @@ export function ChatSidebar() {
                 fontWeight: 500,
               }}
             >
-              Compañero Cultural
+              Cultural Companion
             </p>
           )}
         </div>
@@ -210,8 +229,8 @@ export function ChatSidebar() {
           <button
             type="button"
             onClick={() => { clearMessages(); setShowHistory(false); }}
-            aria-label="Nueva conversación"
-            title="Nueva conversación"
+            aria-label="New conversation"
+            title="New conversation"
             style={iconBtnStyle}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.6")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -223,8 +242,8 @@ export function ChatSidebar() {
           <button
             type="button"
             onClick={() => setShowHistory((v) => !v)}
-            aria-label="Ver historial"
-            title="Historial de conversación"
+            aria-label="View history"
+            title="Conversation history"
             style={{ ...iconBtnStyle, opacity: showHistory ? 1 : undefined, color: showHistory ? "var(--color-accent)" : "var(--color-text-muted)" }}
             onMouseEnter={(e) => { if (!showHistory) e.currentTarget.style.opacity = "0.6"; }}
             onMouseLeave={(e) => { if (!showHistory) e.currentTarget.style.opacity = "1"; }}
@@ -232,25 +251,27 @@ export function ChatSidebar() {
             <ClockCounterClockwise size={17} weight="thin" />
           </button>
 
-          {/* Fullscreen */}
+          {/* Fullscreen toggle */}
           <button
             type="button"
-            onClick={handleExpandToFullscreen}
-            aria-label="Pantalla completa"
-            title="Abrir en pantalla completa"
+            onClick={handleToggleFullscreen}
+            aria-label={isFullscreen ? "Reduce panel" : "Full screen"}
+            title={isFullscreen ? "Reduce panel" : "Full screen"}
             style={iconBtnStyle}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.6")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            <ArrowsOut size={17} weight="thin" />
+            {isFullscreen
+              ? <ArrowsIn size={17} weight="thin" />
+              : <ArrowsOut size={17} weight="thin" />}
           </button>
 
           {/* Close sidebar */}
           <button
             type="button"
             onClick={handleCollapse}
-            aria-label="Cerrar panel"
-            title="Cerrar panel"
+            aria-label="Close panel"
+            title="Close panel"
             style={iconBtnStyle}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.6")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -273,11 +294,11 @@ export function ChatSidebar() {
           }}
         >
           <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.75rem", color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "4px" }}>
-            Historial
+            History
           </p>
           {messages.length === 0 ? (
             <p style={{ fontFamily: "var(--font-ui)", fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>
-              No hay mensajes aún.
+              No messages yet.
             </p>
           ) : (
             messages
@@ -345,7 +366,7 @@ export function ChatSidebar() {
                 margin: 0,
               }}
             >
-              Inicia una conversación…
+              Start a conversation…
             </p>
           </div>
         ) : (
@@ -399,74 +420,133 @@ export function ChatSidebar() {
       {/* ── Input area ──────────────────────────────────────────────────────────── */}
       <div
         style={{
-          padding: "12px 16px",
+          padding: "12px 16px 16px",
           borderTop: "1px solid var(--color-border)",
           backgroundColor: "var(--color-surface)",
-          display: "flex",
-          alignItems: "flex-end",
-          gap: "8px",
           flexShrink: 0,
         }}
       >
-        <textarea
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholderText}
-          rows={1}
-          disabled={isTyping}
-          aria-label="Escribe tu pregunta al compañero cultural de IA"
+        <div
           style={{
-            flex: 1,
-            resize: "none",
-            borderRadius: "var(--radius-md)",
+            borderRadius: "16px",
             border: "1px solid var(--color-border)",
-            padding: "8px 12px",
-            fontFamily: "var(--font-ui)",
-            fontSize: "0.875rem",
-            color: "var(--color-text-primary)",
             backgroundColor: "var(--color-bg)",
-            outline: "none",
-            lineHeight: "1.5",
-            transition: "border-color 0.2s",
-            cursor: isTyping ? "not-allowed" : "text",
-            opacity: isTyping ? 0.5 : 1,
-          }}
-          onFocus={(e) => {
-            if (!isTyping) {
-              e.currentTarget.style.borderColor = "var(--color-accent)";
-            }
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.borderColor = "var(--color-border)";
-          }}
-        />
-        <button
-          type="button"
-          onClick={handleSend}
-          aria-label="Enviar mensaje"
-          disabled={!inputValue.trim() || isTyping}
-          style={{
-            padding: "8px",
-            borderRadius: "50%",
-            border: "none",
-            cursor: inputValue.trim() && !isTyping ? "pointer" : "default",
-            backgroundColor:
-              inputValue.trim() && !isTyping
-                ? "var(--color-accent)"
-                : "var(--color-surface-raised)",
-            color:
-              inputValue.trim() && !isTyping ? "#ffffff" : "var(--color-text-muted)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "background-color 0.2s, opacity 0.2s",
-            opacity: inputValue.trim() && !isTyping ? 1 : 0.4,
-            flexShrink: 0,
+            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
           }}
         >
-          <ArrowUp size={16} weight="thin" />
-        </button>
+          {/* Quoted text block */}
+          {quotedText && (
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", padding: "10px 14px 0" }}>
+              <div style={{ flex: 1, minWidth: 0, borderLeft: "2px solid var(--color-accent)", paddingLeft: "10px" }}>
+                <p
+                  style={{
+                    fontFamily: "var(--font-ui)",
+                    fontSize: "0.75rem",
+                    fontStyle: "italic",
+                    color: "var(--color-text-secondary)",
+                    margin: 0,
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {quotedText}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQuotedText(null)}
+                aria-label="Remove quote"
+                style={{
+                  flexShrink: 0,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "var(--color-text-muted)",
+                  padding: "2px",
+                  borderRadius: "4px",
+                  display: "flex",
+                }}
+              >
+                <X size={11} weight="thin" />
+              </button>
+            </div>
+          )}
+
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "8px", padding: "10px 14px" }}>
+            <textarea
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholderText}
+              rows={2}
+              disabled={isTyping}
+              aria-label="Type your question to the AI cultural companion"
+              className="flex-1 resize-none bg-transparent border-none outline-none text-sm"
+              style={{
+                fontFamily: "var(--font-ui)",
+                color: "var(--color-text-primary)",
+                lineHeight: "1.5",
+                cursor: isTyping ? "not-allowed" : "text",
+                opacity: isTyping ? 0.5 : 1,
+                minWidth: 0,
+              }}
+            />
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0, paddingBottom: "2px" }}>
+              {/* Voice mode */}
+              <button
+                type="button"
+                aria-label="Voice mode"
+                title="Voice mode"
+                className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 hover:opacity-80"
+                style={{
+                  backgroundColor: "var(--color-surface-raised)",
+                  color: "var(--color-text-secondary)",
+                  border: "1px solid var(--color-border)",
+                }}
+              >
+                <WaveformIcon size={14} />
+              </button>
+
+              {/* Dictate / Send */}
+              {inputValue.trim() ? (
+                <button
+                  type="button"
+                  onClick={handleSend}
+                  aria-label="Send message"
+                  disabled={isTyping}
+                  className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
+                  style={{
+                    backgroundColor: "var(--color-accent)",
+                    color: "#ffffff",
+                    border: "none",
+                    opacity: isTyping ? 0.5 : 1,
+                    cursor: isTyping ? "default" : "pointer",
+                  }}
+                >
+                  <ArrowUp size={15} weight="thin" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsVoiceActive((v) => !v)}
+                  aria-label={isVoiceActive ? "Stop dictation" : "Dictate message"}
+                  title={isVoiceActive ? "Stop dictation" : "Dictate message"}
+                  className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
+                  style={{
+                    backgroundColor: isVoiceActive ? "var(--color-accent)" : "var(--color-surface-raised)",
+                    color: isVoiceActive ? "#fff" : "var(--color-text-secondary)",
+                    border: isVoiceActive ? "1px solid var(--color-accent)" : "1px solid var(--color-border)",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Microphone size={14} weight={isVoiceActive ? "fill" : "thin"} />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ export interface Article {
   tags: string[];
   regionTags: string[];
   readingTime: number;
+  imageUrl?: string;
   excerpt: string;
   body: string;
 }

@@ -8,22 +8,22 @@ export default function ArticleNotFound() {
         className="text-xs uppercase tracking-widest mb-4"
         style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-muted)" }}
       >
-        Artículo no encontrado
+        Article not found
       </p>
       <h1
         className="text-3xl font-semibold mb-3"
         style={{ fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}
       >
-        Este artículo no existe
+        This article doesn't exist
       </h1>
       <p
         className="text-base mb-8 max-w-sm"
         style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}
       >
-        Puede que haya sido movido o que el enlace sea incorrecto.
+        It may have been moved or the link may be incorrect.
       </p>
       <Link href="/feed">
-        <Button variant="secondary" size="md">Volver al inicio</Button>
+        <Button variant="secondary" size="md">Back to home</Button>
       </Link>
     </div>
   );

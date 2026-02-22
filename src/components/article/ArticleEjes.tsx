@@ -14,34 +14,34 @@ function getEjes(article: Article): string[] {
   // Tag-aware question templates
   const byTag: Record<string, [string, string, string]> = {
     Architecture: [
-      `¿Cómo dialoga la arquitectura de «${title}» con las tradiciones prehispánicas?`,
-      "¿Qué materiales locales se usan y por qué importa esa elección?",
-      "¿Existe un movimiento de arquitectura comunitaria en México hoy?",
+      `How does the architecture in «${title}» dialogue with pre-Hispanic traditions?`,
+      "What local materials are used and why does that choice matter?",
+      "Is there a community architecture movement in Mexico today?",
     ],
     "Regional history": [
-      `¿Cuál es el contexto histórico que da forma a «${title}»?`,
-      "¿Cómo influye la región en la identidad cultural de sus comunidades?",
-      "¿Qué tensiones entre tradición y modernidad aparecen en este tema?",
+      `What is the historical context that shapes «${title}»?`,
+      "How does the region influence the cultural identity of its communities?",
+      "What tensions between tradition and modernity appear in this topic?",
     ],
     "Cultural heritage": [
-      `¿Qué amenazas enfrenta el patrimonio descrito en «${title}»?`,
-      "¿Cómo se transmite este conocimiento de generación en generación?",
-      "¿Qué papel tienen las comunidades locales en su preservación?",
+      `What threats does the heritage described in «${title}» face?`,
+      "How is this knowledge passed down from generation to generation?",
+      "What role do local communities play in its preservation?",
     ],
     Art: [
-      `¿Qué corriente artística contextualiza «${title}»?`,
-      "¿Cómo negocia este arte entre lo local y lo global?",
-      "¿Qué artistas contemporáneos continúan esta conversación hoy?",
+      `What artistic movement contextualizes «${title}»?`,
+      "How does this art negotiate between the local and the global?",
+      "Which contemporary artists continue this conversation today?",
     ],
     Music: [
-      `¿Cuáles son los orígenes del género musical en «${title}»?`,
-      "¿Cómo refleja esta música la migración y el mestizaje?",
-      "¿Existe riesgo de que este género desaparezca? ¿Por qué?",
+      `What are the origins of the musical genre in «${title}»?`,
+      "How does this music reflect migration and cultural mixing?",
+      "Is there a risk that this genre could disappear? Why?",
     ],
     Literature: [
-      `¿Qué autores han explorado los temas de «${title}»?`,
-      "¿Cómo se relaciona esta literatura con la identidad nacional?",
-      "¿Hay voces emergentes que reinterpreten esta tradición?",
+      `Which authors have explored the themes of «${title}»?`,
+      "How does this literature relate to national identity?",
+      "Are there emerging voices reinterpreting this tradition?",
     ],
   };
 
@@ -50,9 +50,9 @@ function getEjes(article: Article): string[] {
 
   // Generic fallback
   return [
-    `¿Cuál es el contexto histórico de «${title}»?`,
-    "¿Cómo se relaciona este tema con la cultura mexicana contemporánea?",
-    "¿Qué comunidades o actores son clave en esta conversación?",
+    `What is the historical context of «${title}»?`,
+    "How does this topic relate to contemporary Mexican culture?",
+    "Which communities or actors are key to this conversation?",
   ];
 }
 
@@ -107,7 +107,7 @@ export function ArticleEjes({ article }: ArticleEjesProps) {
           letterSpacing: "0.1em",
         }}
       >
-        Ejes para profundizar
+        Explore further
       </p>
 
       <div className="flex flex-col gap-2">

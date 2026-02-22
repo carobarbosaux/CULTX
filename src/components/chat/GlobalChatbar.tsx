@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import { ArrowUp, ChatTeardrop, Microphone, X } from "@phosphor-icons/react";
+import { ArrowUp, ChatTeardrop, Microphone, X } from "@phosphor-icons/react/dist/ssr";
 
 // Simple tooltip wrapper — shows label above on hover
 function Tooltip({ label, children }: { label: string; children: React.ReactNode }) {
@@ -76,15 +76,15 @@ function incrementGuestInteractions(): number {
 function getSuggestedPrompts(articleContext: string | null): string[] {
   if (articleContext) {
     return [
-      `¿Cuál es el contexto histórico de «${articleContext}»?`,
-      `Explícame los personajes clave de este tema`,
-      `¿Cómo se relaciona esto con la cultura mexicana actual?`,
+      `What's the historical context of «${articleContext}»?`,
+      `Who are the key figures in this topic?`,
+      `How does this relate to contemporary Mexican culture?`,
     ];
   }
   return [
-    "¿Cuáles son las tradiciones más importantes de México?",
-    "Cuéntame sobre el muralismo mexicano",
-    "¿Qué es el patrimonio cultural inmaterial?",
+    "What are Mexico's most important cultural traditions?",
+    "Tell me about the Mexican muralism movement",
+    "What is intangible cultural heritage?",
   ];
 }
 
@@ -98,7 +98,7 @@ function getSuggestedPrompts(articleContext: string | null): string[] {
 // ────────────────────────────────────────────────────────────────────────────────
 
 export function GlobalChatbar() {
-  const { chatMode, articleContext, messages, setChatMode, setArticleContext, addMessage } =
+  const { chatMode, articleContext, messages, quotedText, setChatMode, setArticleContext, setQuotedText, addMessage } =
     useChatStore();
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -111,22 +111,26 @@ export function GlobalChatbar() {
 
   if (chatMode === "fullscreen") return null;
 
-  const isExpanded = isFocused || inputValue.length > 0;
+  const isExpanded = isFocused || inputValue.length > 0 || !!quotedText;
   const isSidebarOpen = chatMode === "sidebar";
   const suggestedPrompts = getSuggestedPrompts(articleContext);
 
   const placeholderText = articleContext
-    ? `Pregunta sobre «${articleContext}»…`
-    : "Pregunta sobre cultura mexicana…";
+    ? `Ask about «${articleContext}»…`
+    : "Ask about Mexican culture…";
 
   async function handleSend() {
     const trimmed = inputValue.trim();
-    if (!trimmed || isTyping) return;
+    if ((!trimmed && !quotedText) || isTyping) return;
 
     const isGuest = !getProfile()?.isLoggedIn;
 
-    addMessage({ role: "user", content: trimmed });
+    const fullContent = quotedText
+      ? `> ${quotedText}\n\n${trimmed}`.trim()
+      : trimmed;
+    addMessage({ role: "user", content: fullContent });
     setInputValue("");
+    setQuotedText(null);
     setIsFocused(false);
     setIsTyping(true);
     await new Promise((r) => setTimeout(r, 800 + Math.random() * 400));
@@ -138,7 +142,7 @@ export function GlobalChatbar() {
         addMessage({
           role: "assistant",
           content:
-            "Has alcanzado el límite de 3 conversaciones gratuitas. Crea una cuenta para seguir explorando la cultura mexicana sin límites — es gratis.\n\n👉 [Crear cuenta](/signup)",
+            "You've reached the 3 free conversation limit. Create an account to keep exploring Mexican culture without limits — it's free.\n\n👉 [Create account](/signup)",
         });
         setIsTyping(false);
         setChatMode("sidebar");
@@ -175,12 +179,16 @@ export function GlobalChatbar() {
 
   return (
     <div
-      className="fixed bottom-4 flex flex-col items-center transition-all duration-300"
+      className="fixed flex flex-col items-center transition-all duration-300"
       style={{
         left: "0",
         right: isSidebarOpen ? "380px" : "0",
+        bottom: "0",
         paddingLeft: "16px",
         paddingRight: "16px",
+        paddingBottom: "16px",
+        paddingTop: "48px",
+        background: "linear-gradient(to top, var(--color-bg) 48%, transparent 100%)",
         pointerEvents: "none",
         zIndex: 50,
       }}
@@ -245,16 +253,49 @@ export function GlobalChatbar() {
           margin: "0 auto",
           borderRadius: isExpanded ? "16px" : "999px",
           border: "1px solid",
-          borderColor: isFocused ? "var(--color-accent)" : "var(--color-border)",
+          borderColor: isFocused
+            ? "var(--color-accent)"
+            : isExpanded
+            ? "var(--color-border)"
+            : "var(--color-accent)",
           backgroundColor: isExpanded
             ? "var(--color-surface)"
-            : "color-mix(in srgb, var(--color-surface) 85%, transparent)",
+            : "color-mix(in srgb, var(--color-accent) 6%, var(--color-surface))",
           backdropFilter: "blur(12px)",
           boxShadow: isExpanded
             ? "0 8px 32px rgba(0,0,0,0.14)"
             : "0 2px 10px rgba(0,0,0,0.08)",
         }}
       >
+        {/* Quoted text block */}
+        {quotedText && (
+          <div className="flex items-start gap-2 px-4 pt-3">
+            <div
+              className="flex-1 min-w-0"
+              style={{
+                borderLeft: "2px solid var(--color-accent)",
+                paddingLeft: "10px",
+              }}
+            >
+              <p
+                className="text-xs italic line-clamp-2"
+                style={{ fontFamily: "var(--font-ui)", color: "var(--color-text-secondary)" }}
+              >
+                {quotedText}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setQuotedText(null)}
+              aria-label="Remove quote"
+              className="shrink-0 rounded p-0.5 transition-opacity duration-200 hover:opacity-70"
+              style={{ color: "var(--color-text-muted)" }}
+            >
+              <X size={11} weight="thin" />
+            </button>
+          </div>
+        )}
+
         {/* Article context badge */}
         {articleContext && isExpanded && (
           <div className="flex items-center gap-2 px-4 pt-3">
@@ -266,12 +307,12 @@ export function GlobalChatbar() {
                 fontFamily: "var(--font-ui)",
               }}
             >
-              Contexto: {articleContext}
+              Context: {articleContext}
             </span>
             <button
               type="button"
               onClick={() => setArticleContext(null)}
-              aria-label="Quitar contexto"
+              aria-label="Remove context"
               className="shrink-0 rounded p-0.5 transition-opacity duration-200 hover:opacity-70"
               style={{ color: "var(--color-text-muted)" }}
             >
@@ -303,7 +344,7 @@ export function GlobalChatbar() {
             placeholder={placeholderText}
             rows={isExpanded ? 2 : 1}
             disabled={isTyping}
-            aria-label="Escribe tu pregunta al compañero cultural de IA"
+            aria-label="Type your question to the AI cultural companion"
             className="flex-1 resize-none bg-transparent border-none outline-none text-sm"
             style={{
               fontFamily: "var(--font-ui)",
@@ -319,11 +360,11 @@ export function GlobalChatbar() {
           {isExpanded && (
             <div className="flex items-center gap-1.5 flex-shrink-0 pb-0.5">
               {/* Voice mode */}
-              <Tooltip label="Modo de voz">
+              <Tooltip label="Voice mode">
                 <button
                   type="button"
                   onClick={() => setChatMode("sidebar")}
-                  aria-label="Modo de voz"
+                  aria-label="Voice mode"
                   className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 hover:opacity-80"
                   style={{
                     backgroundColor: "var(--color-surface-raised)",
@@ -337,11 +378,11 @@ export function GlobalChatbar() {
 
               {/* Dictate (default) → Send (when input has text) */}
               {inputValue.trim() ? (
-                <Tooltip label="Enviar mensaje">
+                <Tooltip label="Send message">
                   <button
                     type="button"
                     onClick={handleSend}
-                    aria-label="Enviar mensaje"
+                    aria-label="Send message"
                     disabled={isTyping}
                     className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
                     style={{
@@ -354,11 +395,11 @@ export function GlobalChatbar() {
                   </button>
                 </Tooltip>
               ) : (
-                <Tooltip label={isVoiceActive ? "Detener dictado" : "Dictar mensaje"}>
+                <Tooltip label={isVoiceActive ? "Stop dictation" : "Dictate message"}>
                   <button
                     type="button"
                     onClick={() => setIsVoiceActive((v) => !v)}
-                    aria-label={isVoiceActive ? "Detener dictado" : "Dictar mensaje"}
+                    aria-label={isVoiceActive ? "Stop dictation" : "Dictate message"}
                     className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
                     style={{
                       backgroundColor: isVoiceActive

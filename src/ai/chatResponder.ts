@@ -26,29 +26,29 @@ export interface ChatResponseInput {
 // ────────────────────────────────────────────────────────────────────────────────
 
 const RESPONSE_POOL: string[] = [
-  // 0 — Muralismo (Rivera, Orozco, Siqueiros)
-  "El muralismo mexicano es quizás el movimiento artístico más influyente del siglo XX en América Latina. Diego Rivera, José Clemente Orozco y David Alfaro Siqueiros transformaron paredes de edificios públicos en epopeyas visuales de identidad popular. Su apuesta era radical: el arte no debía estar en los museos sino en las calles, accesible a todos.",
+  // 0 — Muralism (Rivera, Orozco, Siqueiros)
+  "Mexican muralism is perhaps the most influential artistic movement of the 20th century in Latin America. Diego Rivera, José Clemente Orozco, and David Alfaro Siqueiros transformed public building walls into visual epics of popular identity. Their bet was radical: art should not be in museums but in the streets, accessible to everyone.",
 
-  // 1 — Arquitectura (UNAM, Barragán, Legorreta)
-  "La arquitectura mexicana del siglo XX logró algo poco común: crear un lenguaje propio entre la modernidad y la tradición. Luis Barragán introdujo el silencio y el color como materiales de construcción. Su uso de muros en tonos tierra, fucsia y amarillo intenso es inseparable de la luz del altiplano mexicano. El campus de la UNAM, declarado Patrimonio de la Humanidad, lleva ese diálogo aún más lejos, con murales integrados a la estructura misma.",
+  // 1 — Architecture (UNAM, Barragán, Legorreta)
+  "20th-century Mexican architecture achieved something rare: creating its own language between modernity and tradition. Luis Barragán introduced silence and color as building materials. His use of earth-toned, fuchsia, and intense yellow walls is inseparable from the light of the Mexican highlands. The UNAM campus, declared a World Heritage Site, takes that dialogue even further, with murals integrated into the structure itself.",
 
-  // 2 — Culturas prehispánicas (Maya, Aztec, Zapotec)
-  "Las culturas prehispánicas de México no fueron monolíticas sino un archipiélago de civilizaciones. Los mayas desarrollaron un sistema calendárico de asombrosa precisión astronómica; los zapotecas en Monte Albán crearon uno de los primeros centros urbanos del continente; los mexicas construyeron Tenochtitlan sobre un lago, una de las ciudades más grandes del mundo en el siglo XV. Cada una dejó capas de significado que aún estructuran la cultura mexicana contemporánea.",
+  // 2 — Pre-Hispanic cultures (Maya, Aztec, Zapotec)
+  "Mexico's pre-Hispanic cultures were not monolithic but an archipelago of civilizations. The Maya developed a calendar system of astonishing astronomical precision; the Zapotecs at Monte Albán created one of the continent's first urban centers; the Mexica built Tenochtitlan on a lake — one of the largest cities in the world in the 15th century. Each left layers of meaning that still structure contemporary Mexican culture.",
 
-  // 3 — Cine mexicano (Buñuel, Cuarón, del Toro)
-  "México tiene una de las tradiciones cinematográficas más ricas del mundo hispanohablante. Luis Buñuel eligió México como segundo hogar y aquí rodó algunas de sus obras maestras del surrealismo. Décadas después, Alfonso Cuarón, Guillermo del Toro e Iñárritu reinventaron el cine de autor global desde una sensibilidad profundamente mexicana — demostrando que lo local y lo universal no son opuestos.",
+  // 3 — Mexican cinema (Buñuel, Cuarón, del Toro)
+  "Mexico has one of the richest cinematic traditions in the Spanish-speaking world. Luis Buñuel chose Mexico as his second home and shot some of his surrealist masterpieces there. Decades later, Alfonso Cuarón, Guillermo del Toro, and Iñárritu reinvented global auteur cinema from a deeply Mexican sensibility — proving that the local and the universal are not opposites.",
 
-  // 4 — Música y tradiciones regionales (son jarocho, norteño, cumbia)
-  "La música popular mexicana es un mosaico de regiones y tiempos. El son jarocho del Golfo, con su zapateado colectivo en la tarima del fandango, es tanto ritual como fiesta. La música norteña del norte fronterizo cuenta historias de migración y resistencia con acordeón y bajo sexto. La cumbia llegó desde Colombia y se reinventó en los barrios populares hasta volverse completamente mexicana. Cada género es un archivo sonoro de experiencias colectivas.",
+  // 4 — Music and regional traditions (son jarocho, norteño, cumbia)
+  "Mexican popular music is a mosaic of regions and eras. Son jarocho from the Gulf coast, with its collective footwork on the fandango platform, is as much ritual as celebration. Norteño music from the border north tells stories of migration and resistance with accordion and bajo sexto. Cumbia arrived from Colombia and was reinvented in working-class neighborhoods until it became entirely Mexican. Each genre is a sonic archive of collective experiences.",
 
-  // 5 — Arte contemporáneo mexicano
-  "El arte contemporáneo mexicano vive un momento de ebullición. Artistas como Gabriel Orozco y Damián Ortega llevan décadas dialogando con los grandes circuitos internacionales sin abandonar una mirada crítica sobre lo cotidiano mexicano. Al mismo tiempo, una nueva generación de creadoras indígenas y colectivos comunitarios está reconfigurando quién tiene derecho a producir y definir la 'cultura nacional'.",
+  // 5 — Contemporary Mexican art
+  "Contemporary Mexican art is experiencing a moment of ferment. Artists like Gabriel Orozco and Damián Ortega have spent decades engaging with major international circuits without abandoning a critical eye on everyday Mexican life. At the same time, a new generation of indigenous women artists and community collectives is reshaping who has the right to produce and define 'national culture'.",
 
-  // 6 — Literatura mexicana (Paz, Fuentes, Poniatowska, Rulfo)
-  "La literatura mexicana del siglo XX dio al mundo voces que son hoy referencias globales. Octavio Paz exploró la identidad nacional con una lucidez casi arqueológica en 'El laberinto de la soledad'. Juan Rulfo logró algo irrepetible: condensar la épica de la Revolución en dos libros delgados que siguen siendo inagotables. Elena Poniatowska convirtió el periodismo en literatura al dar voz a los silenciados. Carlos Fuentes conectó Mexico con Europa y América Latina en una conversación intelectual sin precedente.",
+  // 6 — Mexican literature (Paz, Fuentes, Poniatowska, Rulfo)
+  "20th-century Mexican literature gave the world voices that are now global references. Octavio Paz explored national identity with almost archaeological lucidity in 'The Labyrinth of Solitude'. Juan Rulfo achieved something unrepeatable: condensing the epic of the Revolution into two slim books that remain inexhaustible. Elena Poniatowska turned journalism into literature by giving voice to the silenced. Carlos Fuentes connected Mexico with Europe and Latin America in an unprecedented intellectual conversation.",
 
-  // 7 — Arte popular y artesanía
-  "El arte popular mexicano es uno de los patrimonios más vivos y amenazados del país. Desde los alebrijes oaxaqueños hasta la cerámica Talavera de Puebla, desde los textiles zapotecos hasta las máscaras guerrerenses, cada pieza condensa generaciones de conocimiento técnico y cosmológico. El riesgo es doble: la industrialización que abarata y vacía de sentido, y la apropiación que saca las piezas de su contexto sin retribuir a sus comunidades.",
+  // 7 — Folk art and crafts
+  "Mexican folk art is one of the country's most vibrant and threatened heritages. From Oaxacan alebrijes to Talavera ceramics from Puebla, from Zapotec textiles to Guerrero masks, each piece condenses generations of technical and cosmological knowledge. The risk is twofold: industrialization that cheapens and empties meaning, and appropriation that removes pieces from their context without giving back to their communities.",
 
   // 8 — Contextual fallback (uses articleContext)
   "", // Overwritten dynamically in getChatResponse when articleContext is set
@@ -59,10 +59,10 @@ const RESPONSE_POOL: string[] = [
 // ────────────────────────────────────────────────────────────────────────────────
 
 const ACADEMIC_APPENDAGES: string[] = [
-  "\n\nContexto académico: Este fenómeno ha sido estudiado por García Canclini en el marco de las culturas híbridas latinoamericanas (1989). Su análisis sugiere que la modernidad periférica en México genera formas culturales únicas que no pueden reducirse a categorías eurocentristas.",
-  "\n\nContexto académico: Bonfil Batalla en 'México profundo' (1987) argumenta que la civilización mesoamericana no desapareció con la Conquista sino que sobrevive como sustrato cultural activo, en tensión permanente con el proyecto de modernización occidental.",
-  "\n\nContexto académico: Roger Bartra en 'La jaula de la melancolía' (1987) deconstruye los mitos del carácter nacional mexicano, mostrando cómo el 'mexicano arquetípico' es en realidad una construcción ideológica de las élites posrevolucionarias.",
-  "\n\nContexto académico: Monsiváis documentó exhaustivamente cómo la cultura popular urbana mexicana del siglo XX constituyó un espacio de resistencia y negociación identitaria frente a la hegemonía del Estado posrevolucionario ('Los rituales del caos', 1995).",
+  "\n\nAcademic context: This phenomenon has been studied by García Canclini within the framework of Latin American hybrid cultures (1989). His analysis suggests that peripheral modernity in Mexico generates unique cultural forms that cannot be reduced to Eurocentric categories.",
+  "\n\nAcademic context: Bonfil Batalla in 'México profundo' (1987) argues that Mesoamerican civilization did not disappear with the Conquest but survives as an active cultural substrate, in permanent tension with the Western modernization project.",
+  "\n\nAcademic context: Roger Bartra in 'The Cage of Melancholy' (1987) deconstructs the myths of Mexican national character, showing how the 'archetypal Mexican' is in reality an ideological construction of post-revolutionary elites.",
+  "\n\nAcademic context: Monsiváis exhaustively documented how 20th-century Mexican urban popular culture constituted a space of resistance and identity negotiation against the hegemony of the post-revolutionary state ('Rituals of Chaos', 1995).",
 ];
 
 // ────────────────────────────────────────────────────────────────────────────────
@@ -88,7 +88,7 @@ export function getChatResponse(input: ChatResponseInput): string {
   if (index === 8 || (articleContext && index >= poolSize - 1)) {
     // Contextual fallback — reference the article title directly
     if (articleContext) {
-      response = `Sobre «${articleContext}»: este tema refleja una de las tensiones más ricas de la cultura mexicana contemporánea — la negociación entre identidad local y narrativa global. Hay capas históricas, estéticas y políticas que vale la pena desenredar. ¿Quieres que exploremos algún ángulo específico?`;
+      response = `On «${articleContext}»: this topic reflects one of the richest tensions in contemporary Mexican culture — the negotiation between local identity and global narrative. There are historical, aesthetic, and political layers worth unpacking. Would you like to explore a specific angle?`;
     } else {
       // Fallback when there is no article context and index happens to be 8
       response = RESPONSE_POOL[0];
@@ -109,7 +109,7 @@ export function getChatResponse(input: ChatResponseInput): string {
     response += ACADEMIC_APPENDAGES[appendageIndex];
   } else if (isStudent) {
     response +=
-      "\n\n¿Te gustaría que profundizara en algún aspecto para tu investigación?";
+      "\n\nWould you like me to go deeper on any aspect for your research?";
   }
 
   return response;

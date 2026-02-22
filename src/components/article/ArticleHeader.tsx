@@ -16,30 +16,15 @@ function formatDate(dateStr: string): string {
 export function ArticleHeader({ article }: ArticleHeaderProps) {
   return (
     <header className="mb-10">
-      {/* Cover image placeholder — replace with <img src={article.coverImage} ... /> when ready */}
-      <div
-        className="w-full mb-8 rounded-lg overflow-hidden"
-        style={{
-          aspectRatio: "16/7",
-          backgroundColor: "var(--color-surface-raised)",
-          border: "1px solid var(--color-border)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "8px",
-          color: "var(--color-text-muted)",
-          fontFamily: "var(--font-ui)",
-        }}
-        aria-hidden="true"
-      >
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-          <rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="10" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M2 22 L9 16 L14 20 L20 14 L30 22" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        </svg>
-        <span style={{ fontSize: "0.7rem", opacity: 0.5 }}>cover · {article.id}</span>
-      </div>
+      {article.imageUrl && (
+        <div className="w-full mb-8 rounded-lg overflow-hidden" style={{ aspectRatio: "16/7" }}>
+          <img
+            src={article.imageUrl}
+            alt={article.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       {article.tags[0] && (
         <span
@@ -84,7 +69,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
           <span aria-hidden="true">·</span>
           <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
           <span aria-hidden="true">·</span>
-          <span>{article.readingTime} min de lectura</span>
+          <span>{article.readingTime} min read</span>
         </div>
       </div>
     </header>

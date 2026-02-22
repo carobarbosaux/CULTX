@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ProgressBar } from "./ProgressBar";
 
 interface OnboardingShellProps {
@@ -23,12 +24,13 @@ export function OnboardingShell({
       <div className="w-full max-w-lg space-y-8">
         {/* Wordmark */}
         <div className="text-center">
-          <span
-            className="text-2xl font-semibold"
+          <Link
+            href="/feed"
+            className="text-2xl font-semibold hover:opacity-80 transition-opacity"
             style={{ fontFamily: "var(--font-display)", color: "var(--color-text-primary)" }}
           >
             CULTX
-          </span>
+          </Link>
         </div>
 
         {/* Progress */}
