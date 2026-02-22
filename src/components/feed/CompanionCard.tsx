@@ -7,7 +7,7 @@ const SUGGESTIONS = [
     icon: BookOpen,
     label: "Explore a cultural thread",
     description: "Dive deeper into Architecture and its connections across Mexico.",
-    cta: "Start exploring",
+    cta: "See how it works",
   },
   {
     icon: Sparkle,
@@ -19,16 +19,17 @@ const SUGGESTIONS = [
     icon: Headphones,
     label: "Turn this into a 5-min listen",
     description: "Generate an audio summary of any article to read on the go.",
-    cta: "Try audio mode",
+    cta: "See how it works",
   },
 ];
 
-export function CompanionCard() {
-  const [dismissed, setDismissed] = useState(() =>
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("cultx:companion-dismissed") === "true"
-      : false
-  );
+interface CompanionCardProps {
+  /** Called when the user clicks the CTA to open the onboarding modal. */
+  onOpenGuide: () => void;
+}
+
+export function CompanionCard({ onOpenGuide }: CompanionCardProps) {
+  const [dismissed, setDismissed] = useState(false);
   const [suggestionIndex] = useState(() => Math.floor(Math.random() * SUGGESTIONS.length));
 
   if (dismissed) return null;
@@ -46,10 +47,7 @@ export function CompanionCard() {
     >
       <button
         type="button"
-        onClick={() => {
-          sessionStorage.setItem("cultx:companion-dismissed", "true");
-          setDismissed(true);
-        }}
+        onClick={() => setDismissed(true)}
         aria-label="Dismiss companion suggestion"
         className="absolute top-3 right-3 p-1 rounded transition-colors duration-[200ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
         style={{ color: "var(--color-text-muted)" }}
@@ -83,8 +81,10 @@ export function CompanionCard() {
           >
             {suggestion.description}
           </p>
+          {/* CTA opens the onboarding modal */}
           <button
             type="button"
+            onClick={onOpenGuide}
             className="text-sm font-medium mt-2 transition-colors duration-[200ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus-ring)]"
             style={{ color: "var(--color-accent)", fontFamily: "var(--font-ui)" }}
           >
